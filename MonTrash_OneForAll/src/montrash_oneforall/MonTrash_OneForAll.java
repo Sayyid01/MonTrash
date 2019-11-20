@@ -3,19 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package montrash_cleaner;
+package montrash_oneforall;
 
 /**
  *
  * @author Sayyid
  */
-public class MonTrash_Cleaner {
+public class MonTrash_OneForAll {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        new formLogin().setVisible(true);
     }
     
 }
