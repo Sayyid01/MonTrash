@@ -5,6 +5,17 @@
  */
 package montrash_oneforall;
 
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Sayyid
@@ -17,11 +28,88 @@ public class formPengguna extends javax.swing.JFrame {
     public formPengguna() {
         initComponents();
         this.setLocationRelativeTo(null);
-        salam.setText("<html><h1>Halo, "+namaFromDB+"</h1></html>");
+        conn = Koneksi.bukaKoneksi();
+        sudahDiangkut.setSelected(false);
+        userData(email);
+        statusSampah();
+        statusPembayaran();
     }
     
-    String namaFromDB="Naufal Sayyid Furqoon";
+    private Connection conn;
+    private ArrayList<Pengguna> arrPengguna;
+    private String email = SharedData.getEmail();
+          
+    private void userData(String email){
+      if(conn!=null){
+          arrPengguna=new ArrayList<>();
+          String query="SELECT nama, status_sampah, status_pembayaran FROM pengguna, transaksi WHERE pengguna.email=? AND transaksi.email=?";
+          try{
+              PreparedStatement ps = conn.prepareStatement(query);
+              ps.setString(1, email);
+              ps.setString(2, email);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    String nama = rs.getString("nama");
+                    int status_sampah = rs.getInt("status_sampah");
+                    int status_pembayaran = rs.getInt("status_pembayaran");
+                    Pengguna pengguna = new Pengguna(nama, status_sampah, status_pembayaran);
+                    arrPengguna.add(pengguna);
+                    salam.setText("<html><h1>Halo, "+nama+"</h1></html>");
+                }
+                rs.close();
+                ps.close();
+          }catch(SQLException e){
+              Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+          }
+      }
+    }
     
+    private void kirimKeterangan(String keterangan, String email){
+        if(conn!=null){
+            String query = "UPDATE transaksi SET keterangan=? WHERE email=?";
+            try{
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1, keterangan);
+                ps.setString(2, email);
+                int hasil = ps.executeUpdate();
+                if(hasil==1){
+                    JOptionPane.showMessageDialog(this, "Berhasil menambahkan keterangan");
+                }
+            }catch(SQLException e){
+                Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    
+    private void statusSampah(){
+        ButtonGroup group = new ButtonGroup();
+        group.add(sudahDiangkut);
+        group.add(belumDiangkut);
+        int status = arrPengguna.get(0).isStatus_sampah();
+        if(status==0){
+            belumDiangkut.setSelected(true);
+            sudahDiangkut.setEnabled(false);
+            tfKeterangan.setEditable(true);
+        }else{
+            sudahDiangkut.setSelected(true);
+            belumDiangkut.setEnabled(false);
+            tfKeterangan.setEditable(false);
+        }
+    }
+    
+    private void statusPembayaran(){
+        ButtonGroup group = new ButtonGroup();
+        group.add(sudahMembayar);
+        group.add(belumMembayar);
+        int status = arrPengguna.get(0).isStatus_pembayaran();
+        if(status==0){
+            belumMembayar.setSelected(true);
+            sudahMembayar.setEnabled(false);
+        }else{
+            sudahMembayar.setSelected(true);
+            belumMembayar.setEnabled(false);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -41,13 +129,23 @@ public class formPengguna extends javax.swing.JFrame {
         jpAkunSaya = new javax.swing.JPanel();
         salam = new javax.swing.JLabel();
         jpStatus = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        belumDiangkut = new javax.swing.JRadioButton();
+        sudahDiangkut = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tfKeterangan = new javax.swing.JTextArea();
+        sudahMembayar = new javax.swing.JRadioButton();
+        belumMembayar = new javax.swing.JRadioButton();
+        btKirimKeterangan = new javax.swing.JButton();
         jpHistori = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
@@ -126,7 +224,6 @@ public class formPengguna extends javax.swing.JFrame {
         jpAkunSaya.setBackground(new java.awt.Color(201, 246, 88));
 
         salam.setText("<html><h1>Halo, </h1></html>");
-        salam.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jpAkunSayaLayout = new javax.swing.GroupLayout(jpAkunSaya);
         jpAkunSaya.setLayout(jpAkunSayaLayout);
@@ -135,7 +232,7 @@ public class formPengguna extends javax.swing.JFrame {
             .addGroup(jpAkunSayaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(salam, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(191, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
         jpAkunSayaLayout.setVerticalGroup(
             jpAkunSayaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -149,30 +246,123 @@ public class formPengguna extends javax.swing.JFrame {
 
         jpStatus.setBackground(new java.awt.Color(201, 246, 88));
 
-        jLabel2.setText("Status");
+        jLabel1.setText("<html><h1>Status sampah : </h1></html>");
+        jLabel1.setPreferredSize(new java.awt.Dimension(64, 64));
+
+        jLabel4.setText("<html><h1>Status pembayaran bulanan : </h1></html>");
+        jLabel4.setPreferredSize(new java.awt.Dimension(64, 64));
+
+        belumDiangkut.setText("<html><h2>Belum diangkut </h2></html>");
+        belumDiangkut.setPreferredSize(new java.awt.Dimension(183, 51));
+        belumDiangkut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                belumDiangkutActionPerformed(evt);
+            }
+        });
+
+        sudahDiangkut.setText("<html><h2>Sudah diangkut </h2></html>");
+        sudahDiangkut.setPreferredSize(new java.awt.Dimension(183, 51));
+        sudahDiangkut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sudahDiangkutActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("<html><h3>Keterangan : </h3></html>");
+
+        jScrollPane3.setHorizontalScrollBar(null);
+        jScrollPane3.setMaximumSize(new java.awt.Dimension(162, 92));
+        jScrollPane3.setWheelScrollingEnabled(false);
+
+        tfKeterangan.setColumns(20);
+        tfKeterangan.setRows(5);
+        tfKeterangan.setBorder(null);
+        tfKeterangan.setMaximumSize(new java.awt.Dimension(160, 90));
+        jScrollPane3.setViewportView(tfKeterangan);
+        tfKeterangan.getAccessibleContext().setAccessibleParent(jScrollPane1);
+
+        sudahMembayar.setText("<html><h2>Sudah membayar </h2></html>");
+        sudahMembayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sudahMembayarActionPerformed(evt);
+            }
+        });
+
+        belumMembayar.setText("<html><h2>Belum membayar </h2></html>");
+        belumMembayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                belumMembayarActionPerformed(evt);
+            }
+        });
+
+        btKirimKeterangan.setText("Kirim pesan");
+        btKirimKeterangan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btKirimKeteranganActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpStatusLayout = new javax.swing.GroupLayout(jpStatus);
         jpStatus.setLayout(jpStatusLayout);
         jpStatusLayout.setHorizontalGroup(
             jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpStatusLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(590, Short.MAX_VALUE))
+                .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpStatusLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpStatusLayout.createSequentialGroup()
+                        .addGap(93, 93, 93)
+                        .addComponent(sudahMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(belumMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpStatusLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpStatusLayout.createSequentialGroup()
+                        .addGap(93, 93, 93)
+                        .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btKirimKeterangan, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpStatusLayout.createSequentialGroup()
+                                    .addComponent(sudahDiangkut, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(belumDiangkut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jpStatusLayout.createSequentialGroup()
+                                    .addGap(5, 5, 5)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
         jpStatusLayout.setVerticalGroup(
             jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpStatusLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(501, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sudahDiangkut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(belumDiangkut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btKirimKeterangan, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sudahMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(belumMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
 
         jPanel2.add(jpStatus, "card3");
 
         jpHistori.setBackground(new java.awt.Color(201, 246, 88));
 
-        jLabel3.setText("Histori");
+        jLabel3.setText("<html><h3>Histori Pembayaran Sampah</h3></html>");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -200,6 +390,8 @@ public class formPengguna extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(jTable2);
 
+        jLabel5.setText("<html><h3>Histori Pengangkutan Sampah</h3></html>");
+
         javax.swing.GroupLayout jpHistoriLayout = new javax.swing.GroupLayout(jpHistori);
         jpHistori.setLayout(jpHistoriLayout);
         jpHistoriLayout.setHorizontalGroup(
@@ -207,21 +399,25 @@ public class formPengguna extends javax.swing.JFrame {
             .addGroup(jpHistoriLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jpHistoriLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
+                    .addGroup(jpHistoriLayout.createSequentialGroup()
+                        .addGroup(jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jpHistoriLayout.setVerticalGroup(
             jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpHistoriLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
         );
@@ -235,7 +431,7 @@ public class formPengguna extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,6 +501,32 @@ public class formPengguna extends javax.swing.JFrame {
         rbnHistori.setSelected(true);
     }//GEN-LAST:event_rbnHistoriActionPerformed
 
+    private void belumDiangkutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_belumDiangkutActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_belumDiangkutActionPerformed
+
+    private void sudahDiangkutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sudahDiangkutActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sudahDiangkutActionPerformed
+
+    private void sudahMembayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sudahMembayarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sudahMembayarActionPerformed
+
+    private void belumMembayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_belumMembayarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_belumMembayarActionPerformed
+
+    private void btKirimKeteranganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btKirimKeteranganActionPerformed
+        // TODO add your handling code here:
+        if(tfKeterangan.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Tidak bisa mengirim pesan kosong");
+        }else{
+            String keterangan = tfKeterangan.getText();
+            kirimKeterangan(keterangan, email);
+        }
+    }//GEN-LAST:event_btKirimKeteranganActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -343,14 +565,21 @@ public class formPengguna extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton belumDiangkut;
+    private javax.swing.JRadioButton belumMembayar;
+    private javax.swing.JButton btKirimKeterangan;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JPanel jpAkunSaya;
@@ -360,5 +589,8 @@ public class formPengguna extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbnHistori;
     private javax.swing.JRadioButton rbnStatus;
     private javax.swing.JLabel salam;
+    private javax.swing.JRadioButton sudahDiangkut;
+    private javax.swing.JRadioButton sudahMembayar;
+    private javax.swing.JTextArea tfKeterangan;
     // End of variables declaration//GEN-END:variables
 }

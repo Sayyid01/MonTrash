@@ -115,6 +115,7 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btLoginActionPerformed"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="btLoginKeyPressed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btRegister">

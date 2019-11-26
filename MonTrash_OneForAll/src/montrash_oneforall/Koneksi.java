@@ -8,25 +8,24 @@ package montrash_oneforall;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *
  * @author Sayyid
  */
 public class Koneksi {
-    public static Connection conn;
-    public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-    public static final String DB_NAME = "montrash_db";
-    public static final String DB_URL = "jdbc:mysql://localhost"+DB_NAME;
-    public static final String DB_UNAME = "sayyid";
-    public static final String DB_PASSWD="";
+    private static Connection conn;
+    private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String DB_NAME = "montrash_db";
+    private static final String DB_URL = "jdbc:mysql://localhost/" + DB_NAME;
+    private static final String DB_UNAME = "sayyid";
+    private static final String DB_PASSWD="";
     
     public static Connection bukaKoneksi(){
         if(conn == null){
             try{
                 Class.forName("com.mysql.jdbc.Driver");
-                conn = DriverManager.getConnection(DB_NAME, DB_UNAME, DB_PASSWD);
+                conn = DriverManager.getConnection(DB_URL, DB_UNAME, DB_PASSWD);
                 System.out.println("Koneksi Berhasil");
             }catch(ClassNotFoundException | SQLException e){
                 System.out.println("Koneksi Gagal");

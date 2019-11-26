@@ -6,7 +6,11 @@
 package montrash_oneforall;
 
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,18 +26,32 @@ public class formLogin extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         conn = Koneksi.bukaKoneksi();
+        this.getRootPane().setDefaultButton(btLogin);
     }
     private Connection conn;
     
-    private boolean login(String email, String password){
-        boolean nilai=false;
-        if(conn!=null){
-            JOptionPane.showMessageDialog(this,"Tidak ada koneksi", "CONNECTION ERROR", JOptionPane.ERROR_MESSAGE);
+    private void login(String email, String password){
+        if(email.equals("") || password.equals("")){
+            JOptionPane.showMessageDialog(this,"Username/Password tidak boleh kosong", "WARNING", JOptionPane.ERROR_MESSAGE);
         }else{
-            String query="SELECT*FROM pengguna WHERE emai=? and password=?";
+            String query="SELECT*FROM pengguna WHERE email=? AND password=?";
+            try{
+              PreparedStatement ps = conn.prepareStatement(query);
+              ps.setString(1, email);
+              ps.setString(2, password);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    new formPengguna().setVisible(true);
+                    this.dispose();
+                }else{
+                    JOptionPane.showMessageDialog(this,"EMAIL/PASSWORD SALAH!", "Warning", JOptionPane.ERROR_MESSAGE);
+                }
+                rs.close();
+                ps.close();
+          }catch(SQLException e){
+              Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+          }
         }
-        
-        return nilai;
     }
 
     /**
@@ -67,6 +85,11 @@ public class formLogin extends javax.swing.JFrame {
         btLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btLoginActionPerformed(evt);
+            }
+        });
+        btLogin.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btLoginKeyPressed(evt);
             }
         });
 
@@ -137,7 +160,15 @@ public class formLogin extends javax.swing.JFrame {
 
     private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
         // TODO add your handling code here:
+        String email = tfEmail.getText();
+        String password = pfPassword.getText();
+        SharedData.setEmail(email);
+        login(email, password);
     }//GEN-LAST:event_btLoginActionPerformed
+
+    private void btLoginKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btLoginKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btLoginKeyPressed
 
     /**
      * @param args the command line arguments
