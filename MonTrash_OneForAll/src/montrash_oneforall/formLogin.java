@@ -5,6 +5,10 @@
  */
 package montrash_oneforall;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Sayyid
@@ -17,6 +21,19 @@ public class formLogin extends javax.swing.JFrame {
     public formLogin() {
         initComponents();
         this.setLocationRelativeTo(null);
+        conn = Koneksi.bukaKoneksi();
+    }
+    private Connection conn;
+    
+    private boolean login(String email, String password){
+        boolean nilai=false;
+        if(conn!=null){
+            JOptionPane.showMessageDialog(this,"Tidak ada koneksi", "CONNECTION ERROR", JOptionPane.ERROR_MESSAGE);
+        }else{
+            String query="SELECT*FROM pengguna WHERE emai=? and password=?";
+        }
+        
+        return nilai;
     }
 
     /**

@@ -7,6 +7,8 @@ package montrash_oneforall;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -26,8 +28,9 @@ public class Koneksi {
                 Class.forName("com.mysql.jdbc.Driver");
                 conn = DriverManager.getConnection(DB_NAME, DB_UNAME, DB_PASSWD);
                 System.out.println("Koneksi Berhasil");
-            }catch(Exception e){
-                System.err.println("Koneksi gagal"+e.getMessage());
+            }catch(ClassNotFoundException | SQLException e){
+                System.out.println("Koneksi Gagal");
+                System.err.println(e.getMessage());
             }
         }
         return conn;

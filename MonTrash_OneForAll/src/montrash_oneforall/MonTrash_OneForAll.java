@@ -16,7 +16,8 @@ public class MonTrash_OneForAll {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        new formLogin().setVisible(true);
+//        new formLogin().setVisible(true);
+        new formPengguna().setVisible(true);
     }
     
 }
