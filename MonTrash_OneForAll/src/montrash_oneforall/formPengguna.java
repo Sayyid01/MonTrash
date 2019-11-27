@@ -42,7 +42,7 @@ public class formPengguna extends javax.swing.JFrame {
     private void userData(String email){
       if(conn!=null){
           arrPengguna=new ArrayList<>();
-          String query="SELECT nama, status_sampah, status_pembayaran FROM pengguna, transaksi WHERE pengguna.email=? AND transaksi.email=?";
+          String query="SELECT nama, transaksi.id, status_sampah, status_pembayaran FROM pengguna, transaksi WHERE pengguna.email=? AND transaksi.email=?";
           try{
               PreparedStatement ps = conn.prepareStatement(query);
               ps.setString(1, email);
@@ -50,11 +50,13 @@ public class formPengguna extends javax.swing.JFrame {
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()){
                     String nama = rs.getString("nama");
+                    int id = rs.getInt("transaksi.id");
                     int status_sampah = rs.getInt("status_sampah");
                     int status_pembayaran = rs.getInt("status_pembayaran");
-                    Pengguna pengguna = new Pengguna(nama, status_sampah, status_pembayaran);
+                    Pengguna pengguna = new Pengguna(nama, id, status_sampah, status_pembayaran);
                     arrPengguna.add(pengguna);
                     salam.setText("<html><h1>Halo, "+nama+"</h1></html>");
+                    setIdBasedOnArray();
                 }
                 rs.close();
                 ps.close();
@@ -64,13 +66,14 @@ public class formPengguna extends javax.swing.JFrame {
       }
     }
     
-    private void kirimKeterangan(String keterangan, String email){
+    private void kirimKeterangan(String keterangan, int id, String email){
         if(conn!=null){
-            String query = "UPDATE transaksi SET keterangan=? WHERE email=?";
+            String query = "UPDATE transaksi SET keterangan=? WHERE id=? AND email=?";
             try{
                 PreparedStatement ps = conn.prepareStatement(query);
                 ps.setString(1, keterangan);
-                ps.setString(2, email);
+                ps.setInt(2, id);
+                ps.setString(3, email);
                 int hasil = ps.executeUpdate();
                 if(hasil==1){
                     JOptionPane.showMessageDialog(this, "Berhasil menambahkan keterangan");
@@ -81,11 +84,25 @@ public class formPengguna extends javax.swing.JFrame {
         }
     }
     
+    private void setIdBasedOnArray(){
+        for(int i=0;i < arrPengguna.size();i++){
+            int id = arrPengguna.get(i).getId();
+            if(id==arrPengguna.size()){
+                int lastID = id;
+                System.out.println(lastID);
+                Pengguna pengguna = new Pengguna(lastID);
+                arrPengguna.add(pengguna);
+            }
+        }
+    }
+    
     private void statusSampah(){
         ButtonGroup group = new ButtonGroup();
         group.add(sudahDiangkut);
         group.add(belumDiangkut);
-        int status = arrPengguna.get(0).isStatus_sampah();
+        Pengguna pengguna = new Pengguna();
+        int id = pengguna.getLastID();
+        int status = arrPengguna.get(id).isStatus_sampah();
         if(status==0){
             belumDiangkut.setSelected(true);
             sudahDiangkut.setEnabled(false);
@@ -101,7 +118,9 @@ public class formPengguna extends javax.swing.JFrame {
         ButtonGroup group = new ButtonGroup();
         group.add(sudahMembayar);
         group.add(belumMembayar);
-        int status = arrPengguna.get(0).isStatus_pembayaran();
+        Pengguna pengguna = new Pengguna();
+        int id = pengguna.getLastID();
+        int status = arrPengguna.get(id).isStatus_pembayaran();
         if(status==0){
             belumMembayar.setSelected(true);
             sudahMembayar.setEnabled(false);
@@ -522,8 +541,11 @@ public class formPengguna extends javax.swing.JFrame {
         if(tfKeterangan.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Tidak bisa mengirim pesan kosong");
         }else{
+            Pengguna pengguna = new Pengguna();
+            int id = pengguna.getLastID();
             String keterangan = tfKeterangan.getText();
-            kirimKeterangan(keterangan, email);
+            String email = SharedData.getEmail();
+            kirimKeterangan(keterangan, id, email);
         }
     }//GEN-LAST:event_btKirimKeteranganActionPerformed
 
