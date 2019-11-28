@@ -3,18 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package montrash_oneforall;
+package montrash_oneforall.view;
 
-import java.awt.HeadlessException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import montrash_oneforall.controler.Function;
+import montrash_oneforall.model.DataPengguna;
+import montrash_oneforall.model.SharedData;
 
 /**
  *
@@ -28,81 +23,29 @@ public class formPengguna extends javax.swing.JFrame {
     public formPengguna() {
         initComponents();
         this.setLocationRelativeTo(null);
-        conn = Koneksi.bukaKoneksi();
-        sudahDiangkut.setSelected(false);
-        userData(email);
+        f.getUserData(id_pengguna);
+        getNamaUser();
+        System.out.println(id_pengguna+" in formPengguna");
         statusSampah();
         statusPembayaran();
     }
+
+    private Function f = new Function();   
+    private int id_pengguna = SharedData.getId_pengguna();
+    private int id_pengangkutan = f.arrDataPengguna.size();
     
-    private Connection conn;
-    private ArrayList<Pengguna> arrPengguna;
-    private String email = SharedData.getEmail();
-          
-    private void userData(String email){
-      if(conn!=null){
-          arrPengguna=new ArrayList<>();
-          String query="SELECT nama, transaksi.id, status_sampah, status_pembayaran FROM pengguna, transaksi WHERE pengguna.email=? AND transaksi.email=?";
-          try{
-              PreparedStatement ps = conn.prepareStatement(query);
-              ps.setString(1, email);
-              ps.setString(2, email);
-                ResultSet rs = ps.executeQuery();
-                while(rs.next()){
-                    String nama = rs.getString("nama");
-                    int id = rs.getInt("transaksi.id");
-                    int status_sampah = rs.getInt("status_sampah");
-                    int status_pembayaran = rs.getInt("status_pembayaran");
-                    Pengguna pengguna = new Pengguna(nama, id, status_sampah, status_pembayaran);
-                    arrPengguna.add(pengguna);
-                    salam.setText("<html><h1>Halo, "+nama+"</h1></html>");
-                    setIdBasedOnArray();
-                }
-                rs.close();
-                ps.close();
-          }catch(SQLException e){
-              Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
-          }
-      }
-    }
-    
-    private void kirimKeterangan(String keterangan, int id, String email){
-        if(conn!=null){
-            String query = "UPDATE transaksi SET keterangan=? WHERE id=? AND email=?";
-            try{
-                PreparedStatement ps = conn.prepareStatement(query);
-                ps.setString(1, keterangan);
-                ps.setInt(2, id);
-                ps.setString(3, email);
-                int hasil = ps.executeUpdate();
-                if(hasil==1){
-                    JOptionPane.showMessageDialog(this, "Berhasil menambahkan keterangan");
-                }
-            }catch(SQLException e){
-                Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
-    }
-    
-    private void setIdBasedOnArray(){
-        for(int i=0;i < arrPengguna.size();i++){
-            int id = arrPengguna.get(i).getId();
-            if(id==arrPengguna.size()){
-                int lastID = id;
-                System.out.println(lastID);
-                Pengguna pengguna = new Pengguna(lastID);
-                arrPengguna.add(pengguna);
-            }
-        }
+    private void getNamaUser(){
+        String namaUser = f.arrDataPengguna.get(id_pengangkutan).getNama();
+        salam.setText("<html><h1>Halo, "+namaUser+"</h1></html>");
     }
     
     private void statusSampah(){
         ButtonGroup group = new ButtonGroup();
         group.add(sudahDiangkut);
         group.add(belumDiangkut);
-        Pengguna pengguna = new Pengguna();
-        int id = pengguna.getLastID();
-        int status = arrPengguna.get(id).isStatus_sampah();
+        DataPengguna dataPengguna = new DataPengguna();
+        
+        int status = f.arrDataPengguna.get(id_pengangkutan).getStatus_angkut();
         if(status==0){
             belumDiangkut.setSelected(true);
             sudahDiangkut.setEnabled(false);
@@ -118,9 +61,8 @@ public class formPengguna extends javax.swing.JFrame {
         ButtonGroup group = new ButtonGroup();
         group.add(sudahMembayar);
         group.add(belumMembayar);
-        Pengguna pengguna = new Pengguna();
-        int id = pengguna.getLastID();
-        int status = arrPengguna.get(id).isStatus_pembayaran();
+
+        int status = f.arrDataPengguna.get(id_pengangkutan).getStatus_pembayaran();
         if(status==0){
             belumMembayar.setSelected(true);
             sudahMembayar.setEnabled(false);
@@ -159,9 +101,6 @@ public class formPengguna extends javax.swing.JFrame {
         belumMembayar = new javax.swing.JRadioButton();
         btKirimKeterangan = new javax.swing.JButton();
         jpHistori = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
@@ -298,7 +237,6 @@ public class formPengguna extends javax.swing.JFrame {
         tfKeterangan.setBorder(null);
         tfKeterangan.setMaximumSize(new java.awt.Dimension(160, 90));
         jScrollPane3.setViewportView(tfKeterangan);
-        tfKeterangan.getAccessibleContext().setAccessibleParent(jScrollPane1);
 
         sudahMembayar.setText("<html><h2>Sudah membayar </h2></html>");
         sudahMembayar.addActionListener(new java.awt.event.ActionListener() {
@@ -381,21 +319,6 @@ public class formPengguna extends javax.swing.JFrame {
 
         jpHistori.setBackground(new java.awt.Color(201, 246, 88));
 
-        jLabel3.setText("<html><h3>Histori Pembayaran Sampah</h3></html>");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -409,7 +332,7 @@ public class formPengguna extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(jTable2);
 
-        jLabel5.setText("<html><h3>Histori Pengangkutan Sampah</h3></html>");
+        jLabel5.setText("<html><h3>Histori Pembayaran Bulanan</h3></html>");
 
         javax.swing.GroupLayout jpHistoriLayout = new javax.swing.GroupLayout(jpHistori);
         jpHistori.setLayout(jpHistoriLayout);
@@ -418,12 +341,9 @@ public class formPengguna extends javax.swing.JFrame {
             .addGroup(jpHistoriLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
                     .addGroup(jpHistoriLayout.createSequentialGroup()
-                        .addGroup(jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -433,12 +353,8 @@ public class formPengguna extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel2.add(jpHistori, "card4");
@@ -541,11 +457,8 @@ public class formPengguna extends javax.swing.JFrame {
         if(tfKeterangan.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Tidak bisa mengirim pesan kosong");
         }else{
-            Pengguna pengguna = new Pengguna();
-            int id = pengguna.getLastID();
             String keterangan = tfKeterangan.getText();
-            String email = SharedData.getEmail();
-            kirimKeterangan(keterangan, id, email);
+            f.kirimKeterangan(keterangan, id_pengangkutan, WIDTH);
         }
     }//GEN-LAST:event_btKirimKeteranganActionPerformed
 
@@ -592,17 +505,14 @@ public class formPengguna extends javax.swing.JFrame {
     private javax.swing.JButton btKirimKeterangan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JPanel jpAkunSaya;
     private javax.swing.JPanel jpHistori;

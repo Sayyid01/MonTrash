@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package montrash_oneforall;
+package montrash_oneforall.view;
 
 import java.sql.Connection;
 import javax.swing.JOptionPane;
+import montrash_oneforall.controler.Koneksi;
 
 /**
  *

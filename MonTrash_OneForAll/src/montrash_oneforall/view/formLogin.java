@@ -3,18 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package montrash_oneforall;
+package montrash_oneforall.view;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import java.awt.Color;
-
+import montrash_oneforall.controler.Function;
 /**
  *
  * @author Sheillya
@@ -27,35 +20,11 @@ public class formLogin extends javax.swing.JFrame {
     public formLogin() {
         initComponents();
         this.setLocationRelativeTo(null);
-        conn = Koneksi.bukaKoneksi();
         this.getRootPane().setDefaultButton(btLogin);
     }
-    private Connection conn;
     
-    private void login(String email, String password){
-        if(email.equals("") || password.equals("")){
-            JOptionPane.showMessageDialog(this,"Username/Password tidak boleh kosong", "WARNING", JOptionPane.ERROR_MESSAGE);
-        }else{
-            String query="SELECT*FROM pengguna WHERE email=? AND password=?";
-            try{
-              PreparedStatement ps = conn.prepareStatement(query);
-              ps.setString(1, email);
-              ps.setString(2, password);
-                ResultSet rs = ps.executeQuery();
-                if(rs.next()){
-                    new formPengguna().setVisible(true);
-                    this.dispose();
-                }else{
-                    JOptionPane.showMessageDialog(this,"EMAIL/PASSWORD SALAH!", "Warning", JOptionPane.ERROR_MESSAGE);
-                }
-                rs.close();
-                ps.close();
-          }catch(SQLException e){
-              Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
-          }
-        }
-    }
-
+    Function f = new Function();
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -80,7 +49,7 @@ public class formLogin extends javax.swing.JFrame {
 
         jLabel2.setText("jLabel2");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("login");
         getContentPane().setLayout(null);
 
@@ -216,8 +185,11 @@ public class formLogin extends javax.swing.JFrame {
         // TODO add your handling code here:
         String email = tfEmail.getText();
         String password = pfPassword.getText();
-        SharedData.setEmail(email);
-        login(email, password);
+        if(f.login(email, password)==true){
+            this.dispose();
+            new formPengguna().setVisible(true);
+        }
+        
     }//GEN-LAST:event_btLoginActionPerformed
 
     private void btLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btLoginMouseEntered

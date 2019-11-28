@@ -1,0 +1,23 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package montrash_oneforall.model;
+
+/**
+ *
+ * @author Sayyid
+ */
+public class SharedData {
+    public  static int id_pengguna;
+
+    public static void setId_pengguna(int id_pengguna) {
+       SharedData.id_pengguna = id_pengguna;       
+    }
+
+    public static int getId_pengguna() {
+        System.out.println(id_pengguna+" in Shared Data");
+       return id_pengguna;
+    }
+}
