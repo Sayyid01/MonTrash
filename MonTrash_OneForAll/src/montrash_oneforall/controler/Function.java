@@ -16,16 +16,22 @@ import java.util.ArrayList;
 import java.util.logging.*;
 import javax.swing.JOptionPane;
 import javax.xml.bind.DatatypeConverter;
-import montrash_oneforall.model.DataPengguna;
+import montrash_oneforall.model.HistoriPengangkutan;
+import montrash_oneforall.model.HistoriTransaksi;
+import montrash_oneforall.model.Status;
 import montrash_oneforall.model.SharedData;
+import montrash_oneforall.view.formLogin;
 import montrash_oneforall.view.formPengguna;
+import montrash_oneforall.view.formRegister;
 /**
  *
  * @author Sayyid
  */
 public class Function {
     private Connection conn=Koneksi.bukaKoneksi();
-    public ArrayList<DataPengguna> arrDataPengguna = new ArrayList<>();
+    public ArrayList<Status> arrStatus = new ArrayList<>();
+    public ArrayList<HistoriTransaksi> arrHistori = new ArrayList<>();
+    public ArrayList<HistoriPengangkutan> arrHistoriAngkut = new ArrayList<>();
     
     public Boolean login(String email, String password){
         boolean cek = false;
@@ -50,8 +56,31 @@ public class Function {
                     rs.close();
                     ps.close();
                 }catch(SQLException e){
-                    Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+                    Logger.getLogger(formLogin.class.getName()).log(Level.SEVERE, null, e);
                 }
+            }
+        }
+        return cek;
+    }
+     
+    public Boolean register(String nama, String alamat, String email, String noHp, String password){
+        boolean cek=false;
+        if(conn!=null){
+            String query="INSERT INTO pengguna (nama, alamat, email, no_hp, password, level) VALUES (?,?,?,?,?,'user')";
+            try {
+                PreparedStatement ps  = conn.prepareStatement(query);
+                ps.setString(1, nama);
+                ps.setString(2, alamat);
+                ps.setString(3, email);
+                ps.setString(4, noHp);
+                ps.setString(5, password);
+                int hasil = ps.executeUpdate();
+                if(hasil == 1){
+                    cek = true;
+                    JOptionPane.showMessageDialog(null, "Input Berhasil");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(formRegister.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return cek;
@@ -67,12 +96,12 @@ public class Function {
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()){
                     String nama = rs.getString("nama");
-                    int status_sampah = rs.getInt("pengangkutan.status_angkut");
+                    int status_angkut = rs.getInt("pengangkutan.status_angkut");
                     int status_pembayaran = rs.getInt("transaksi.status_pembayaran");
                     int id_transaksi = rs.getInt("pengangkutan.id_transaksi");
-                    DataPengguna dataPengguna = new DataPengguna(nama, status_sampah, status_pembayaran);
-                    arrDataPengguna.add(dataPengguna);
-                    System.out.println(arrDataPengguna.size()+" ini total size array arrDataPengguna");
+                    Status status = new Status(nama, id_transaksi, status_angkut, status_pembayaran);
+                    arrStatus.add(status);
+//                    System.out.println(arrStatus.isEmpty()+" ini id_transaksi");
                 }
                 rs.close();
                 ps.close();
@@ -94,6 +123,71 @@ public class Function {
                 if(hasil==1){
                     JOptionPane.showMessageDialog(null, "Berhasil menambahkan keterangan");
                 }
+            }catch(SQLException e){
+                Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    
+    /*
+     * Fungsi untuk Histori Transaksi
+     */
+    public void loadDataHistori(int id_pengguna){
+        if(conn!=null){
+            String query = "SELECT*FROM transaksi WHERE id_pengguna=?";
+            try{
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setInt(1, id_pengguna);
+                ResultSet rs = ps.executeQuery();
+                int nomorUrut = 0;
+                while(rs.next()){
+                    nomorUrut++;
+                    String tanggalTransaksi = rs.getString("tanggal_transaksi");
+                    float jumlahBayar = rs.getFloat("jumlah_bayar");
+                    int statusPembayaran = rs.getInt("status_pembayaran");
+                    if(statusPembayaran!=0){
+                        String statusBayar = "Lunas";
+                        HistoriTransaksi histori = new HistoriTransaksi(nomorUrut, tanggalTransaksi, jumlahBayar, statusBayar);
+                        arrHistori.add(histori);
+                    }else{
+                        String statusBayar = "Belum Lunas";
+                        HistoriTransaksi histori = new HistoriTransaksi(nomorUrut, tanggalTransaksi, jumlahBayar, statusBayar);
+                        arrHistori.add(histori);
+                    }
+                }
+                rs.close();
+                ps.close();
+            }catch(SQLException e){
+                Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    
+        public void loadDataHistoriAngkut(int id_transaksi){
+        if(conn!=null){
+            String query = "SELECT*FROM pengangkutan WHERE id_transaksi=?";
+            try{
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setInt(1, id_transaksi);
+                ResultSet rs = ps.executeQuery();
+                int nomorUrut = 0;
+                while(rs.next()){
+                    nomorUrut++;
+                    String tanggalTransaksi = rs.getString("tanggal_pengangkutan");
+                    int statusAngkut = rs.getInt("status_angkut");
+                    String keterangan = rs.getString("keterangan");
+                    if(statusAngkut!=0){
+                        String statusPengangkutan = "Sudah Diangkut";
+                        HistoriPengangkutan historiAngkut = new HistoriPengangkutan(nomorUrut, tanggalTransaksi, statusPengangkutan, keterangan);
+                        arrHistoriAngkut.add(historiAngkut);
+                    }else{
+                        String statusPengangkutan = "Belum Diangkut";
+                        HistoriPengangkutan historiAngkut = new HistoriPengangkutan(nomorUrut, tanggalTransaksi, statusPengangkutan, keterangan);
+                        arrHistoriAngkut.add(historiAngkut);
+                    }
+                }
+                rs.close();
+                ps.close();
             }catch(SQLException e){
                 Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
             }

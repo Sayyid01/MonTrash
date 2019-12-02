@@ -5,13 +5,14 @@
  */
 package montrash_oneforall.view;
 
-import java.sql.Connection;
+import java.awt.Color;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import montrash_oneforall.controler.Koneksi;
+import montrash_oneforall.controler.Function;
 
 /**
  *
- * @author Sayyid
+ * @author Sheillya
  */
 public class formRegister extends javax.swing.JFrame {
 
@@ -21,15 +22,9 @@ public class formRegister extends javax.swing.JFrame {
     public formRegister() {
         initComponents();
         this.setLocationRelativeTo(null);
-        conn = Koneksi.bukaKoneksi();
+        taAlamatRegis.setLineWrap(true);
     }
-    private Connection conn;
-    
-    private void Registrasi(String nama, String alamat, String email, String noHP, String password){
-        if(conn!=null){
-            
-        }
-    }
+    Function f = new Function();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,160 +35,311 @@ public class formRegister extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        tfNamaRegis = new javax.swing.JTextField();
-        btRegis = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        tfEmailRegis = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        tfNoHpRegis = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        pfPasswordRegis = new javax.swing.JPasswordField();
-        pfKonfPasswordRegis = new javax.swing.JPasswordField();
+        tfNamaRegis = new javax.swing.JTextField();
+        tfEmailRegis = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        login = new javax.swing.JLabel();
+        tfNoHpRegis = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         taAlamatRegis = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        btRegis = new javax.swing.JButton();
+        pfPasswordRegis = new javax.swing.JPasswordField();
+        pfKonfPasswordRegis = new javax.swing.JPasswordField();
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Registrasi");
+        setBackground(new java.awt.Color(255, 255, 255));
+        setForeground(java.awt.Color.white);
+        setMinimumSize(null);
+        setResizable(false);
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setMaximumSize(null);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel1.setText("Nama");
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel4.setText("Email");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("Alamat");
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel5.setText("Nama Lengkap");
 
-        btRegis.setText("Register");
-        btRegis.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btRegisActionPerformed(evt);
+        tfNamaRegis.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(173, 244, 91), 2));
+        tfNamaRegis.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
+        tfEmailRegis.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(173, 244, 91), 2));
+        tfEmailRegis.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel8.setText("Konfirmasi Password");
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel9.setText("Sudah punya akun?");
+
+        login.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        login.setForeground(new java.awt.Color(201, 246, 88));
+        login.setText("Login disini");
+        login.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        login.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                loginMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                loginMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                loginMouseExited(evt);
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel3.setText("Email");
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel4.setText("No HP");
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel5.setText("Password");
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel6.setText("Konfirmasi Password");
-
-        pfKonfPasswordRegis.addActionListener(new java.awt.event.ActionListener() {
+        tfNoHpRegis.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(173, 244, 91), 2));
+        tfNoHpRegis.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        tfNoHpRegis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pfKonfPasswordRegisActionPerformed(evt);
+                tfNoHpRegisActionPerformed(evt);
             }
         });
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel10.setText("NO Telp");
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane1.setMaximumSize(new java.awt.Dimension(164, 94));
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(164, 94));
+        jScrollPane1.setWheelScrollingEnabled(false);
 
         taAlamatRegis.setColumns(20);
         taAlamatRegis.setRows(5);
+        taAlamatRegis.setAutoscrolls(false);
+        taAlamatRegis.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(173, 244, 91), 2));
+        taAlamatRegis.setMaximumSize(new java.awt.Dimension(162, 92));
+        taAlamatRegis.setMinimumSize(new java.awt.Dimension(162, 92));
         jScrollPane1.setViewportView(taAlamatRegis);
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel7.setText("Alamat");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel11.setText("Password");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btRegis)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfNamaRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfEmailRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfNoHpRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pfKonfPasswordRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pfPasswordRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(65, 65, 65)
+                        .addComponent(jLabel8)))
+                .addContainerGap(60, Short.MAX_VALUE))
+            .addComponent(tfNamaRegis)
+            .addComponent(tfEmailRegis)
+            .addComponent(tfNoHpRegis)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 169, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfNamaRegis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                .addGap(19, 19, 19)
+                .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(tfNamaRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(tfEmailRegis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel4)
+                .addGap(1, 1, 1)
+                .addComponent(tfEmailRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(tfNoHpRegis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(pfPasswordRegis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(tfNoHpRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(pfKonfPasswordRegis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(login))
+                .addGap(77, 77, 77))
+        );
+
+        btRegis.setBackground(new java.awt.Color(173, 244, 91));
+        btRegis.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btRegis.setForeground(new java.awt.Color(255, 255, 255));
+        btRegis.setText("SIGN UP");
+        btRegis.setBorder(null);
+        btRegis.setBorderPainted(false);
+        btRegis.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btRegis.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btRegisMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btRegisMouseExited(evt);
+            }
+        });
+        btRegis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btRegisActionPerformed(evt);
+            }
+        });
+
+        pfPasswordRegis.setToolTipText("");
+        pfPasswordRegis.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(173, 244, 91), 2));
+
+        pfKonfPasswordRegis.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(173, 244, 91), 2));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btRegis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(pfPasswordRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pfKonfPasswordRegis, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pfPasswordRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pfKonfPasswordRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btRegis)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(btRegis, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(115, 115, 115))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    public void setColor(JButton in){
+        in.setBackground(new Color(66,184,131));
+    }
+    public void resetColor(JButton in1){
+        in1.setBackground(new Color(173, 244, 91));
+    }
+    private void tfNoHpRegisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNoHpRegisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfNoHpRegisActionPerformed
+
+    private void loginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseExited
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_loginMouseExited
+
+    private void loginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseEntered
+        // TODO add your handling code here
+
+    }//GEN-LAST:event_loginMouseEntered
+
+    private void loginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseClicked
+        // TODO add your handling code here:
+        this.dispose();
+        new formLogin().setVisible(true);
+    }//GEN-LAST:event_loginMouseClicked
 
     private void btRegisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisActionPerformed
-        //Jika ada Text Field(tf) yang belum terisi, maka dimunculkan pesan error
-        if(tfNamaRegis.getText().equals("") || taAlamatRegis.getText().equals("")
-           || tfEmailRegis.getText().equals("") || tfNoHpRegis.getText().equals("")
-           || pfPasswordRegis.getText().equals("") || pfKonfPasswordRegis.getText().equals("")){
-               JOptionPane.showMessageDialog(this, "Data tidak boleh kosong.", "ALERT", JOptionPane.WARNING_MESSAGE);
+        // TODO add your handling code here:
+        if(tfNamaRegis.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Nama tidak boleh kosong.", "ALERT", JOptionPane.WARNING_MESSAGE);
+        }else if(taAlamatRegis.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Alamat tidak boleh kosong.", "ALERT", JOptionPane.WARNING_MESSAGE);
+        }else if(tfEmailRegis.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Email tidak boleh kosong.", "ALERT", JOptionPane.WARNING_MESSAGE);
+        }else if(tfNoHpRegis.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "No HP tidak boleh kosong.", "ALERT", JOptionPane.WARNING_MESSAGE);
+        }else if(pfPasswordRegis.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Password tidak boleh kosong.", "ALERT", JOptionPane.WARNING_MESSAGE);
+        }else if(pfKonfPasswordRegis.getText().equals("")){
+            JOptionPane.showMessageDialog(this, "Anda belum mengkonfirmasi password.", "ALERT", JOptionPane.WARNING_MESSAGE);
         }else{
-           //Jika password dan KonfPassword tidak sama, maka dimunculkan pesan error
-           if(!pfKonfPasswordRegis.getText().equals(pfPasswordRegis.getText())){
-              JOptionPane.showMessageDialog(this, "Password tidak sama.", "ALERT", JOptionPane.WARNING_MESSAGE);
-           }else{
-               
-           }
+            //Jika password dan KonfPassword tidak sama, maka dimunculkan pesan error
+            if(!pfPasswordRegis.getText().equals(pfPasswordRegis.getText())){
+                JOptionPane.showMessageDialog(this, "Password tidak sama.", "ALERT", JOptionPane.WARNING_MESSAGE);
+            }else{
+                String nama=tfNamaRegis.getText();
+                String alamat=taAlamatRegis.getText();
+                String email=tfEmailRegis.getText();
+                String noHp=tfNoHpRegis.getText();
+                String password=f.sha1(pfKonfPasswordRegis.getText());
+                if(f.register(nama, alamat, email, noHp, password)==true){
+                    this.dispose();
+                    new formLogin().setVisible(true);
+                }
+            }
         }
     }//GEN-LAST:event_btRegisActionPerformed
 
-    private void pfKonfPasswordRegisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pfKonfPasswordRegisActionPerformed
+    private void btRegisMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btRegisMouseExited
         // TODO add your handling code here:
-    }//GEN-LAST:event_pfKonfPasswordRegisActionPerformed
+        resetColor(btRegis);
+    }//GEN-LAST:event_btRegisMouseExited
+
+    private void btRegisMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btRegisMouseEntered
+        // TODO add your handling code here:
+        setColor(btRegis);
+    }//GEN-LAST:event_btRegisMouseEntered
 
     /**
      * @param args the command line arguments
@@ -232,14 +378,18 @@ public class formRegister extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btRegis;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel login;
     private javax.swing.JPasswordField pfKonfPasswordRegis;
     private javax.swing.JPasswordField pfPasswordRegis;
     private javax.swing.JTextArea taAlamatRegis;

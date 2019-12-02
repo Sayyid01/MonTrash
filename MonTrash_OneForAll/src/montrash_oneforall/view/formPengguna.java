@@ -7,8 +7,11 @@ package montrash_oneforall.view;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import montrash_oneforall.controler.Function;
-import montrash_oneforall.model.DataPengguna;
+import montrash_oneforall.model.HistoriTransaksi;
+import montrash_oneforall.model.Status;
 import montrash_oneforall.model.SharedData;
 
 /**
@@ -23,29 +26,61 @@ public class formPengguna extends javax.swing.JFrame {
     public formPengguna() {
         initComponents();
         this.setLocationRelativeTo(null);
+        tfKeterangan.setLineWrap(true);
         f.getUserData(id_pengguna);
         getNamaUser();
+//        System.out.println(f.arrStatus.size()+" in formPengguna");
         System.out.println(id_pengguna+" in formPengguna");
         statusSampah();
         statusPembayaran();
+        loadKolom();
+        jtHistori.setModel(tableHistori);
+        f.loadDataHistori(id_pengguna);
+        tampilHistoriPengguna();
     }
 
     private Function f = new Function();   
     private int id_pengguna = SharedData.getId_pengguna();
-    private int id_pengangkutan = f.arrDataPengguna.size();
+    private DefaultTableModel tableHistori = new DefaultTableModel(){
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+//    private int angkutan = f.arrStatus.size();
     
-    private void getNamaUser(){
-        String namaUser = f.arrDataPengguna.get(id_pengangkutan).getNama();
-        salam.setText("<html><h1>Halo, "+namaUser+"</h1></html>");
+    /*
+    Setting Kolom Histori Transaksi
+    */
+    private void loadKolom(){
+        tableHistori.addColumn("No");
+        tableHistori.addColumn("Tanggal");
+        tableHistori.addColumn("Jumlah Bayar");
+        tableHistori.addColumn("Status");
+    }
+    private void tampilHistoriPengguna(){
+        for(HistoriTransaksi h:f.arrHistori){
+            tableHistori.addRow(new Object[]{h.getId(), h.getTanggalTransaksi(), h.getJumlahBayar(), h.getStatusPembayaran()});
+        }
     }
     
+    /*
+    Setting Status
+    */
+    private void getNamaUser(){
+        int lastIndex = f.arrStatus.size()-1;
+        String namaUser = f.arrStatus.get(lastIndex).getNama();
+        salam.setText("<html><h1>Halo, "+namaUser+"</h1></html>");
+    }
     private void statusSampah(){
         ButtonGroup group = new ButtonGroup();
         group.add(sudahDiangkut);
         group.add(belumDiangkut);
-        DataPengguna dataPengguna = new DataPengguna();
+        Status dataPengguna = new Status();
         
-        int status = f.arrDataPengguna.get(id_pengangkutan).getStatus_angkut();
+        int lastIndex = f.arrStatus.size()-1;
+//        System.out.println(lastIndex+" Status Angkut");
+        int status = f.arrStatus.get(lastIndex).getStatus_angkut();
         if(status==0){
             belumDiangkut.setSelected(true);
             sudahDiangkut.setEnabled(false);
@@ -56,13 +91,13 @@ public class formPengguna extends javax.swing.JFrame {
             tfKeterangan.setEditable(false);
         }
     }
-    
     private void statusPembayaran(){
         ButtonGroup group = new ButtonGroup();
         group.add(sudahMembayar);
         group.add(belumMembayar);
 
-        int status = f.arrDataPengguna.get(id_pengangkutan).getStatus_pembayaran();
+        int lastIndex = f.arrStatus.size()-1;
+        int status = f.arrStatus.get(lastIndex).getStatus_pembayaran();
         if(status==0){
             belumMembayar.setSelected(true);
             sudahMembayar.setEnabled(false);
@@ -102,11 +137,13 @@ public class formPengguna extends javax.swing.JFrame {
         btKirimKeterangan = new javax.swing.JButton();
         jpHistori = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jtHistori = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Pengguna");
         setLocationByPlatform(true);
+        setResizable(false);
 
         jPanel4.setBackground(new java.awt.Color(201, 246, 88));
 
@@ -228,6 +265,8 @@ public class formPengguna extends javax.swing.JFrame {
 
         jLabel2.setText("<html><h3>Keterangan : </h3></html>");
 
+        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane3.setHorizontalScrollBar(null);
         jScrollPane3.setMaximumSize(new java.awt.Dimension(162, 92));
         jScrollPane3.setWheelScrollingEnabled(false);
@@ -264,32 +303,30 @@ public class formPengguna extends javax.swing.JFrame {
         jpStatusLayout.setHorizontalGroup(
             jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpStatusLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(232, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpStatusLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jpStatusLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpStatusLayout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addComponent(sudahMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(belumMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpStatusLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpStatusLayout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btKirimKeterangan, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpStatusLayout.createSequentialGroup()
+                        .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jpStatusLayout.createSequentialGroup()
                                     .addComponent(sudahDiangkut, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
                                     .addComponent(belumDiangkut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jpStatusLayout.createSequentialGroup()
-                                    .addGap(5, 5, 5)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
-                .addContainerGap(126, Short.MAX_VALUE))
+                                .addComponent(btKirimKeterangan, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(97, 97, 97))
+                    .addGroup(jpStatusLayout.createSequentialGroup()
+                        .addComponent(sudahMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(belumMembayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(85, 85, 85))))
         );
         jpStatusLayout.setVerticalGroup(
             jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,18 +356,30 @@ public class formPengguna extends javax.swing.JFrame {
 
         jpHistori.setBackground(new java.awt.Color(201, 246, 88));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jtHistori.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "No", "Tanggal", "Jumlah Bayar", "Status"
             }
-        ));
-        jScrollPane2.setViewportView(jTable2);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jtHistori.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
+        jtHistori.setAutoscrolls(false);
+        jtHistori.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtHistoriMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jtHistori);
 
         jLabel5.setText("<html><h3>Histori Pembayaran Bulanan</h3></html>");
 
@@ -458,9 +507,22 @@ public class formPengguna extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Tidak bisa mengirim pesan kosong");
         }else{
             String keterangan = tfKeterangan.getText();
-            f.kirimKeterangan(keterangan, id_pengangkutan, WIDTH);
+            int id_angkut = f.arrStatus.size();
+            int lastIndex = f.arrStatus.size()-1;
+            int id_transaksi = f.arrStatus.get(lastIndex).getId_transaksi();
+            f.kirimKeterangan(keterangan, id_angkut, id_transaksi);
         }
     }//GEN-LAST:event_btKirimKeteranganActionPerformed
+
+    private void jtHistoriMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtHistoriMouseClicked
+        // Mouse Click Listener
+         JTable source = (JTable)evt.getSource();
+            int row = source.rowAtPoint( evt.getPoint() );
+            String s=source.getModel().getValueAt(row, 0)+"";
+            int id_transaksi = Integer.parseInt(s);
+            SharedData.setId_transaksi(id_transaksi);
+            new frameHistoriAngkut().setVisible(true);
+    }//GEN-LAST:event_jtHistoriMouseClicked
 
     /**
      * @param args the command line arguments
@@ -513,10 +575,10 @@ public class formPengguna extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable2;
     private javax.swing.JPanel jpAkunSaya;
     private javax.swing.JPanel jpHistori;
     private javax.swing.JPanel jpStatus;
+    private javax.swing.JTable jtHistori;
     private javax.swing.JRadioButton rbnAkunSaya;
     private javax.swing.JRadioButton rbnHistori;
     private javax.swing.JRadioButton rbnStatus;
