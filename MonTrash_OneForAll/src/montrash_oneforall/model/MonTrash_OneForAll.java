@@ -5,6 +5,7 @@
  */
 package montrash_oneforall.model;
 
+import montrash_oneforall.view.formAdmin;
 import montrash_oneforall.view.formLogin;
 
 /**
@@ -20,6 +21,7 @@ public class MonTrash_OneForAll {
         // TODO code application logic here
         new formLogin().setVisible(true);
 //        new formPengguna().setVisible(true);
+//        new formAdmin().setVisible(true);
     }
     
 }

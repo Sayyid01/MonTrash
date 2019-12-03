@@ -7,12 +7,8 @@ package montrash_oneforall.view;
 
 import javax.swing.JButton;
 import java.awt.Color;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import montrash_oneforall.controler.Function;
-import montrash_oneforall.controler.Koneksi;
 /**
  *
  * @author Sheillya
@@ -48,7 +44,6 @@ public class formLogin extends javax.swing.JFrame {
         pfPassword = new javax.swing.JPasswordField();
         btLogin = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        toRegister = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
 
@@ -98,39 +93,18 @@ public class formLogin extends javax.swing.JFrame {
         });
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel3.setText("Belum punya akun?");
-
-        toRegister.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        toRegister.setForeground(new java.awt.Color(201, 246, 88));
-        toRegister.setText("Daftar disini");
-        toRegister.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        toRegister.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                toRegisterMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                toRegisterMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                toRegisterMouseExited(evt);
-            }
-        });
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Belum punya akun? silahkan hubungi admin");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(toRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -141,6 +115,7 @@ public class formLogin extends javax.swing.JFrame {
                             .addComponent(tfEmail))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,11 +132,9 @@ public class formLogin extends javax.swing.JFrame {
                 .addComponent(pfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(toRegister))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, "card2");
@@ -181,8 +154,13 @@ public class formLogin extends javax.swing.JFrame {
         String email = tfEmail.getText();
         String password = f.sha1(pfPassword.getText());
         if(f.login(email, password)==true){
-            this.dispose();
-            new formPengguna().setVisible(true);
+            if(f.cekSudoLevel()==true){
+                new formAdmin().setVisible(true);
+                this.dispose();
+            }else{
+                new formPengguna().setVisible(true);
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_btLoginActionPerformed
 
@@ -195,20 +173,6 @@ public class formLogin extends javax.swing.JFrame {
         // TODO add your handling code here:
          resetColor(btLogin);
     }//GEN-LAST:event_btLoginMouseExited
-
-    private void toRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toRegisterMouseClicked
-        // TODO add your handling code here:
-        this.dispose();
-        new formRegister().setVisible(true);
-    }//GEN-LAST:event_toRegisterMouseClicked
-
-    private void toRegisterMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toRegisterMouseEntered
-        // TODO add your handling code here
-    }//GEN-LAST:event_toRegisterMouseEntered
-
-    private void toRegisterMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toRegisterMouseExited
-        // TODO add your handling code here:
-    }//GEN-LAST:event_toRegisterMouseExited
 
     /**
      * @param args the command line arguments
@@ -255,6 +219,5 @@ public class formLogin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPasswordField pfPassword;
     private javax.swing.JTextField tfEmail;
-    private javax.swing.JLabel toRegister;
     // End of variables declaration//GEN-END:variables
 }

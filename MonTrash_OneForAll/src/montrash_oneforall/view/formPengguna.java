@@ -11,7 +11,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import montrash_oneforall.controler.Function;
 import montrash_oneforall.model.HistoriTransaksi;
-import montrash_oneforall.model.Status;
 import montrash_oneforall.model.SharedData;
 
 /**
@@ -27,7 +26,7 @@ public class formPengguna extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         tfKeterangan.setLineWrap(true);
-        f.getUserData(id_pengguna);
+        getStatus();
         getNamaUser();
 //        System.out.println(f.arrStatus.size()+" in formPengguna");
         System.out.println(id_pengguna+" in formPengguna");
@@ -41,6 +40,12 @@ public class formPengguna extends javax.swing.JFrame {
 
     private Function f = new Function();   
     private int id_pengguna = SharedData.getId_pengguna();
+    private void getStatus(){
+        f.getStatusUserData(id_pengguna);
+        if(f.arrStatus.isEmpty()){
+            JOptionPane.showMessageDialog(null,"Anda belum melakukan pembayaran\nsilahkan hubungi admin untuk melakukan pembayaran", "Warning", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     private DefaultTableModel tableHistori = new DefaultTableModel(){
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -76,10 +81,8 @@ public class formPengguna extends javax.swing.JFrame {
         ButtonGroup group = new ButtonGroup();
         group.add(sudahDiangkut);
         group.add(belumDiangkut);
-        Status dataPengguna = new Status();
         
         int lastIndex = f.arrStatus.size()-1;
-//        System.out.println(lastIndex+" Status Angkut");
         int status = f.arrStatus.get(lastIndex).getStatus_angkut();
         if(status==0){
             belumDiangkut.setSelected(true);
@@ -139,6 +142,7 @@ public class formPengguna extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jtHistori = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
+        btExportToPDF = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Pengguna");
@@ -374,6 +378,7 @@ public class formPengguna extends javax.swing.JFrame {
         });
         jtHistori.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
         jtHistori.setAutoscrolls(false);
+        jtHistori.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jtHistori.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtHistoriMouseClicked(evt);
@@ -382,6 +387,13 @@ public class formPengguna extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jtHistori);
 
         jLabel5.setText("<html><h3>Histori Pembayaran Bulanan</h3></html>");
+
+        btExportToPDF.setText("Jadikan PDF");
+        btExportToPDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btExportToPDFActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpHistoriLayout = new javax.swing.GroupLayout(jpHistori);
         jpHistori.setLayout(jpHistoriLayout);
@@ -393,7 +405,10 @@ public class formPengguna extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
                     .addGroup(jpHistoriLayout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpHistoriLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btExportToPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jpHistoriLayout.setVerticalGroup(
@@ -402,7 +417,9 @@ public class formPengguna extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btExportToPDF, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -524,6 +541,10 @@ public class formPengguna extends javax.swing.JFrame {
             new frameHistoriAngkut().setVisible(true);
     }//GEN-LAST:event_jtHistoriMouseClicked
 
+    private void btExportToPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExportToPDFActionPerformed
+        JOptionPane.showMessageDialog(null, "Coming Soon", "Punteeen!", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btExportToPDFActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -564,6 +585,7 @@ public class formPengguna extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton belumDiangkut;
     private javax.swing.JRadioButton belumMembayar;
+    private javax.swing.JButton btExportToPDF;
     private javax.swing.JButton btKirimKeterangan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
