@@ -13,10 +13,35 @@ public class Status {
     private String nama;
     private String statusPengguna;
     private int id_transaksi;
+    private int id_pengangkutan;
+    private int realIdTransaksi;
     private int status_angkut;
     private String keterangan;
     private int status_pembayaran;
 
+    public Status(String nama, String statusPengguna, int id_transaksi, int id_pengangkutan, int realIdTransaksi, int status_angkut, String keterangan, int status_pembayaran) {
+        this.nama = nama;
+        this.statusPengguna = statusPengguna;
+        this.id_transaksi = id_transaksi;
+        this.id_pengangkutan = id_pengangkutan;
+        this.realIdTransaksi = realIdTransaksi;
+        this.status_angkut = status_angkut;
+        this.keterangan = keterangan;
+        this.status_pembayaran = status_pembayaran;
+    }
+    
+
+    public Status(String nama, String statusPengguna, int id_transaksi, int id_pengangkutan, int status_angkut, String keterangan, int status_pembayaran) {
+        this.nama = nama;
+        this.statusPengguna = statusPengguna;
+        this.id_transaksi = id_transaksi;
+        this.id_pengangkutan = id_pengangkutan;
+        this.status_angkut = status_angkut;
+        this.keterangan = keterangan;
+        this.status_pembayaran = status_pembayaran;
+    }
+
+    
     public Status(String nama, String statusPengguna, int id_transaksi, int status_angkut, String keterangan, int status_pembayaran) {
         this.nama = nama;
         this.statusPengguna = statusPengguna;
@@ -37,8 +62,16 @@ public class Status {
         return statusPengguna;
     }
 
+    public int getRealIdTransaksi() {
+        return realIdTransaksi;
+    }
+
     public int getId_transaksi() {
         return id_transaksi;
+    }
+
+    public int getId_pengangkutan() {
+        return id_pengangkutan;
     }
 
     public int getStatus_angkut() {

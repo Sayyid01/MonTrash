@@ -5,12 +5,14 @@
  */
 package montrash_oneforall.view;
 
-import java.sql.Date;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import montrash_oneforall.controler.Function;
+import montrash_oneforall.model.HistoriTransaksi;
 import montrash_oneforall.model.Pengguna;
+import montrash_oneforall.model.SharedData;
 
 /**
  *
@@ -24,17 +26,22 @@ public class formAdmin extends javax.swing.JFrame {
     public formAdmin() {
         initComponents();
         this.setLocationRelativeTo(null);
-        loadKolom();
+        loadKolomPengguna();
         tablePengguna.setModel(tabelPengguna);
         f.getUserData();
         tampilPengguna();
         statusPembayaran();
         statusAngkut();
+        
+        loadKolomHistori();
+        jtHistoriPembayaran.setModel(tabelHistori);
+        f.loadDataHistoriAll();
+        tampilHistori();
     }
     
     private Function f = new Function();
     /*
-    Setting Kolom Data Pengguna
+    Setting Tabel Data Pengguna
     */    
     private DefaultTableModel tabelPengguna = new DefaultTableModel(){
         @Override
@@ -43,7 +50,7 @@ public class formAdmin extends javax.swing.JFrame {
         }
     };
     
-    private void loadKolom(){
+    private void loadKolomPengguna(){
         tabelPengguna.addColumn("Id");
         tabelPengguna.addColumn("Nama");
         tabelPengguna.addColumn("Alamat");
@@ -78,7 +85,13 @@ public class formAdmin extends javax.swing.JFrame {
         group1.add(sudahMembayar);
         group1.add(belumMembayar);
         if(f.arrStatus.isEmpty()==false){
-            
+            int lastIndex = f.arrStatus.size()-1;
+            int status = f.arrStatus.get(lastIndex).getStatus_pembayaran();
+            if(status==0){
+                belumMembayar.setSelected(true);
+            }else{
+                sudahMembayar.setSelected(true);
+            }
         }
     }
     private void statusAngkut(){
@@ -99,6 +112,30 @@ public class formAdmin extends javax.swing.JFrame {
             }else{
                 sudahDiangkut.setSelected(true);
             }
+        }
+    }
+    
+    /*
+    Seting Table Histori
+    */
+    private DefaultTableModel tabelHistori = new DefaultTableModel(){
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    private void loadKolomHistori(){
+        tabelHistori.addColumn("No");
+        tabelHistori.addColumn("Id Transaksi");
+        tabelHistori.addColumn("Tanggal");
+        tabelHistori.addColumn("Jumlah Bayar");
+        tabelHistori.addColumn("Status");
+        tabelHistori.addColumn("Id Pelanggan");
+    }
+    private void tampilHistori(){
+        tabelHistori.setRowCount(0);
+        for(HistoriTransaksi h:f.arrHistori){
+            tabelHistori.addRow(new Object[]{h.getNomorUrut(), h.getId(), h.getTanggalTransaksi(), h.getJumlahBayar(), h.getStatusPembayaran(), h.getId_pengguna()});
         }
     }
 
@@ -155,13 +192,20 @@ public class formAdmin extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tfKeteranganUser = new javax.swing.JTextArea();
+        tambahDataTransaksi = new javax.swing.JButton();
+        tambahDataPengangkutan = new javax.swing.JButton();
         jpHistori = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jtHistoriPembayaran = new javax.swing.JTable();
+        jLabel10 = new javax.swing.JLabel();
+        btCariPelangganById = new javax.swing.JButton();
+        tfIdCariPelanggan = new javax.swing.JTextField();
+        btExportToPDF = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(807, 526));
         setMinimumSize(new java.awt.Dimension(807, 526));
-        setPreferredSize(new java.awt.Dimension(807, 558));
         setResizable(false);
 
         jPanel4.setBackground(new java.awt.Color(201, 246, 88));
@@ -329,7 +373,7 @@ public class formAdmin extends javax.swing.JFrame {
 
         jpStatus.setBackground(new java.awt.Color(201, 246, 88));
 
-        tfCariId.setText("0");
+        tfCariId.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         btCariId.setText("Cari Id Pengguna");
         btCariId.addActionListener(new java.awt.event.ActionListener() {
@@ -435,6 +479,17 @@ public class formAdmin extends javax.swing.JFrame {
         tfKeteranganUser.setMaximumSize(new java.awt.Dimension(160, 90));
         jScrollPane4.setViewportView(tfKeteranganUser);
 
+        tambahDataTransaksi.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tambahDataTransaksi.setText("+");
+        tambahDataTransaksi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahDataTransaksiActionPerformed(evt);
+            }
+        });
+
+        tambahDataPengangkutan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tambahDataPengangkutan.setText("+");
+
         javax.swing.GroupLayout jpStatusLayout = new javax.swing.GroupLayout(jpStatus);
         jpStatus.setLayout(jpStatusLayout);
         jpStatusLayout.setHorizontalGroup(
@@ -442,7 +497,11 @@ public class formAdmin extends javax.swing.JFrame {
             .addGroup(jpStatusLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
+                    .addGroup(jpStatusLayout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tambahDataTransaksi)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jpStatusLayout.createSequentialGroup()
                         .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -472,7 +531,10 @@ public class formAdmin extends javax.swing.JFrame {
                     .addGroup(jpStatusLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12)
+                            .addGroup(jpStatusLayout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tambahDataPengangkutan))
                             .addGroup(jpStatusLayout.createSequentialGroup()
                                 .addGap(54, 54, 54)
                                 .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -526,7 +588,9 @@ public class formAdmin extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(statusPengguna, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(tambahDataTransaksi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -549,7 +613,9 @@ public class formAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jpStatusLayout.createSequentialGroup()
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tambahDataPengangkutan, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -574,7 +640,44 @@ public class formAdmin extends javax.swing.JFrame {
 
         jpHistori.setBackground(new java.awt.Color(201, 246, 88));
 
-        jLabel3.setText("Histori");
+        jtHistoriPembayaran.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No", "Id Transaksi", "Tanggal", "Jumlah Bayar", "Status", "Id Pelanggan"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jtHistoriPembayaran.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
+        jtHistoriPembayaran.setAutoscrolls(false);
+        jtHistoriPembayaran.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jtHistoriPembayaran.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtHistoriPembayaranMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(jtHistoriPembayaran);
+
+        jLabel10.setText("<html><h2>Histori Pembayaran</h2></html>");
+
+        btCariPelangganById.setText("Cari");
+        btCariPelangganById.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btCariPelangganByIdActionPerformed(evt);
+            }
+        });
+
+        btExportToPDF.setText("Jadikan PDF");
+
+        jLabel3.setText("Klik tabel untuk melihat histori pengangkutan");
 
         javax.swing.GroupLayout jpHistoriLayout = new javax.swing.GroupLayout(jpHistori);
         jpHistori.setLayout(jpHistoriLayout);
@@ -582,15 +685,38 @@ public class formAdmin extends javax.swing.JFrame {
             jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpHistoriLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addContainerGap(563, Short.MAX_VALUE))
+                .addGroup(jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jpHistoriLayout.createSequentialGroup()
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
+                    .addGroup(jpHistoriLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btExportToPDF, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpHistoriLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tfIdCariPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btCariPelangganById)))
+                .addContainerGap())
         );
         jpHistoriLayout.setVerticalGroup(
             jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpHistoriLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addContainerGap(533, Short.MAX_VALUE))
+                .addGap(17, 17, 17)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpHistoriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btCariPelangganById)
+                        .addComponent(tfIdCariPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btExportToPDF, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel2.add(jpHistori, "card4");
@@ -687,18 +813,23 @@ public class formAdmin extends javax.swing.JFrame {
         if(keyword.length()==0){
             f.getUserData(); tampilPengguna();
         }else{
-            f.cariPenggunaKeyword(keyword);tampilPengguna();
+            f.cariPenggunaKeyword(keyword); tampilPengguna();
         }
     }//GEN-LAST:event_btCariActionPerformed
 
     private void btCariIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCariIdActionPerformed
-        int idPengguna = Integer.parseInt(tfCariId.getText());
-        f.getStatusUserData(idPengguna);
-        getNamaUser();
-        getStatusUser();
-        tfKeteranganUser.setLineWrap(true);
-        statusPembayaran();
-        statusAngkut();
+        String s = tfCariId.getText().trim();
+        if(s.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Silahkan masukkan Id pengguna telebih dahulu");
+        }else{
+            int idPengguna = Integer.parseInt(s);
+            f.getStatusUserData(idPengguna);
+            getNamaUser();
+            getStatusUser();
+            tfKeteranganUser.setLineWrap(true);
+            statusPembayaran();
+            statusAngkut();
+        }
     }//GEN-LAST:event_btCariIdActionPerformed
 
     private void tfTanggalBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfTanggalBayarActionPerformed
@@ -710,23 +841,86 @@ public class formAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_tfTanggalAngkutActionPerformed
 
     private void btUpdateTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateTransaksiActionPerformed
-        
+        String id = tfCariId.getText().trim();
+        String bayar = tfJumlahBayar.getText().trim();
+        if(id.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Silahkan masukkan Id pengguna telebih dahulu");
+        }else{
+            float jumlahBayar=0;
+            if(!bayar.equals("")){
+                jumlahBayar=Float.parseFloat(bayar);
+            }
+            int statusBayar=0;
+            if(sudahMembayar.isSelected()){
+                statusBayar=1;
+            }
+            int idPengguna = Integer.parseInt(id);
+            String tanggalBayar = tfTanggalBayar.getText();
+            if(f.arrStatus.isEmpty()==false){
+                int lastIndex = f.arrStatus.size()-1;
+                int idTransaksi = f.arrStatus.get(lastIndex).getRealIdTransaksi();
+                System.out.println(idTransaksi);
+                f.updateDataTransaksi(idPengguna, statusBayar, jumlahBayar, tanggalBayar, idTransaksi);
+            }
+        }
     }//GEN-LAST:event_btUpdateTransaksiActionPerformed
 
     private void btUpdateAngkutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateAngkutActionPerformed
-        int idPengguna = Integer.parseInt(tfCariId.getText());
-        if(idPengguna!=0){
-            String tanggalAngkut = tfTanggalAngkut.getText();
-            Date date=Date.valueOf(tanggalAngkut);
+        String s = tfCariId.getText().trim();
+        if(s.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Silahkan masukkan Id pengguna telebih dahulu");
+        }else{
             int statusAngkut=0;
             if(sudahDiangkut.isSelected()){
                 statusAngkut=1;
             }
-            f.updateDataAngkut(idPengguna, date, statusAngkut);
-        }else{
-            JOptionPane.showMessageDialog(this, "Silahkan pilih Id pengguna telebih dahulu");
+            int idPengguna = Integer.parseInt(s);
+            String tanggalAngkut = tfTanggalAngkut.getText();
+            if(f.arrStatus.isEmpty()==false){
+                int lastIndex = f.arrStatus.size()-1;
+                int idAngkut = f.arrStatus.get(lastIndex).getId_pengangkutan();
+                System.out.println(idAngkut);
+                f.updateDataAngkut(idPengguna, tanggalAngkut, statusAngkut, idAngkut);
+            }
         }
     }//GEN-LAST:event_btUpdateAngkutActionPerformed
+
+    private void jtHistoriPembayaranMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtHistoriPembayaranMouseClicked
+        // Mouse Click Listener
+        JTable source = (JTable)evt.getSource();
+        int row = source.rowAtPoint( evt.getPoint() );
+        String s=source.getModel().getValueAt(row, 1)+"";
+        int id_transaksi = Integer.parseInt(s);
+        SharedData.setId_transaksi(id_transaksi);
+        new frameHistoriAngkut().setVisible(true);
+    }//GEN-LAST:event_jtHistoriPembayaranMouseClicked
+
+    private void btCariPelangganByIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCariPelangganByIdActionPerformed
+        f.arrHistori.clear();
+        System.out.println(f.arrHistori.size());
+        String s = tfIdCariPelanggan.getText().trim();
+        if(s.equalsIgnoreCase("")){
+            f.loadDataHistoriAll(); tampilHistori();
+        }else{
+            int idPengguna = Integer.parseInt(s);
+            f.loadDataHistori(idPengguna); tampilHistori();
+        }
+        tfIdCariPelanggan.setText("");
+    }//GEN-LAST:event_btCariPelangganByIdActionPerformed
+
+    private void tambahDataTransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahDataTransaksiActionPerformed
+        String id = tfCariId.getText().trim();
+        if(id.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Silahkan masukkan Id pengguna telebih dahulu");
+        }else{
+            String message ="Setelah menambahkan data\n anda tidak bisa lagi mengedit data sebelumnya\n apakah anda yakin?";
+            int confirm = JOptionPane.showConfirmDialog(null, message);
+            if(confirm == 0){
+                int idPengguna = Integer.parseInt(id);
+                f.tambahDataTransaksi(idPengguna);
+            }
+        }
+    }//GEN-LAST:event_tambahDataTransaksiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -768,11 +962,14 @@ public class formAdmin extends javax.swing.JFrame {
     private javax.swing.JRadioButton belumMembayar;
     private javax.swing.JButton btCari;
     private javax.swing.JButton btCariId;
+    private javax.swing.JButton btCariPelangganById;
+    private javax.swing.JButton btExportToPDF;
     private javax.swing.JButton btRefresh;
     private javax.swing.JButton btUpdateAngkut;
     private javax.swing.JButton btUpdateTransaksi;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -790,11 +987,15 @@ public class formAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JPanel jpAkunSaya;
     private javax.swing.JPanel jpHistori;
     private javax.swing.JPanel jpStatus;
+    private javax.swing.JTable jtHistori;
+    private javax.swing.JTable jtHistoriPembayaran;
     private javax.swing.JLabel namaPengguna;
     private javax.swing.JRadioButton rbnAkunSaya;
     private javax.swing.JRadioButton rbnHistori;
@@ -804,8 +1005,11 @@ public class formAdmin extends javax.swing.JFrame {
     private javax.swing.JRadioButton sudahDiangkut;
     private javax.swing.JRadioButton sudahMembayar;
     private javax.swing.JTable tablePengguna;
+    private javax.swing.JButton tambahDataPengangkutan;
+    private javax.swing.JButton tambahDataTransaksi;
     private javax.swing.JTextField tfCari;
     private javax.swing.JTextField tfCariId;
+    private javax.swing.JTextField tfIdCariPelanggan;
     private javax.swing.JTextField tfJumlahBayar;
     private javax.swing.JTextArea tfKeteranganUser;
     private javax.swing.JTextField tfTanggalAngkut;

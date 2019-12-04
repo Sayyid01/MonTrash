@@ -10,16 +10,24 @@ package montrash_oneforall.model;
  * @author Sayyid
  */
 public class HistoriTransaksi {
+    private int nomorUrut;
     private int id;
     private String tanggalTransaksi;
-    private float jumlahBayar;
+    private float jumlahBayar;    
+    private int id_pengguna;
     private String statusPembayaran;
 
-    public HistoriTransaksi(int id, String tanggalTransaksi, float jumlahBayar, String statusPembayaran) {
+    public HistoriTransaksi(int nomorUrut, int id, String tanggalTransaksi, float jumlahBayar, int id_pengguna, String statusPembayaran) {
+        this.nomorUrut=nomorUrut;
         this.id = id;
         this.tanggalTransaksi = tanggalTransaksi;
         this.jumlahBayar = jumlahBayar;
+        this.id_pengguna=id_pengguna;
         this.statusPembayaran = statusPembayaran;
+    }
+
+    public int getNomorUrut() {
+        return nomorUrut;
     }
 
     public int getId() {
@@ -32,6 +40,10 @@ public class HistoriTransaksi {
 
     public float getJumlahBayar() {
         return jumlahBayar;
+    }
+
+    public int getId_pengguna() {
+        return id_pengguna;
     }
 
     public String getStatusPembayaran() {

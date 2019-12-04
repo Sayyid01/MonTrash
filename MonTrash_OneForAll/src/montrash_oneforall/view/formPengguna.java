@@ -52,7 +52,6 @@ public class formPengguna extends javax.swing.JFrame {
             return false;
         }
     };
-//    private int angkutan = f.arrStatus.size();
     
     /*
     Setting Kolom Histori Transaksi
@@ -62,10 +61,11 @@ public class formPengguna extends javax.swing.JFrame {
         tableHistori.addColumn("Tanggal");
         tableHistori.addColumn("Jumlah Bayar");
         tableHistori.addColumn("Status");
+        tableHistori.addColumn("Id Transaksi");
     }
     private void tampilHistoriPengguna(){
         for(HistoriTransaksi h:f.arrHistori){
-            tableHistori.addRow(new Object[]{h.getId(), h.getTanggalTransaksi(), h.getJumlahBayar(), h.getStatusPembayaran()});
+            tableHistori.addRow(new Object[]{h.getNomorUrut(), h.getId(), h.getTanggalTransaksi(), h.getJumlahBayar(), h.getStatusPembayaran()});
         }
     }
     
@@ -365,11 +365,11 @@ public class formPengguna extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No", "Tanggal", "Jumlah Bayar", "Status"
+                "No", "Id Transaksi", "Tanggal", "Jumlah Bayar", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -386,7 +386,7 @@ public class formPengguna extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(jtHistori);
 
-        jLabel5.setText("<html><h3>Histori Pembayaran Bulanan</h3></html>");
+        jLabel5.setText("<html><h3>Histori Pembayaran</h3></html>");
 
         btExportToPDF.setText("Jadikan PDF");
         btExportToPDF.addActionListener(new java.awt.event.ActionListener() {
@@ -535,7 +535,7 @@ public class formPengguna extends javax.swing.JFrame {
         // Mouse Click Listener
          JTable source = (JTable)evt.getSource();
             int row = source.rowAtPoint( evt.getPoint() );
-            String s=source.getModel().getValueAt(row, 0)+"";
+            String s=source.getModel().getValueAt(row, 1)+"";
             int id_transaksi = Integer.parseInt(s);
             SharedData.setId_transaksi(id_transaksi);
             new frameHistoriAngkut().setVisible(true);

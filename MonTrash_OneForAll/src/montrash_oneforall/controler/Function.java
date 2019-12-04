@@ -103,17 +103,19 @@ public class Function {
         }
         return cek;
     }
-   
+       
     /*
     Function for Status tab in user side and some data for admin side
     */
     public void getStatusUserData(int id_pengguna){
        if(conn!=null){           
-            String query="SELECT pengguna.nama, pengguna.status, transaksi.tanggal_transaksi, "
-                    + "transaksi.status_pembayaran, pengangkutan.tanggal_pengangkutan, "
-                    + "pengangkutan.status_angkut, pengangkutan.keterangan, pengangkutan.id_transaksi "
-                    + "FROM pengguna JOIN transaksi ON pengguna.id = transaksi.id_pengguna "
-                    + "JOIN pengangkutan ON transaksi.id = pengangkutan.id_transaksi WHERE pengguna.id=?";
+            String query="SELECT pengguna.nama, pengguna.status, transaksi.id, transaksi.tanggal_transaksi, \n" +
+                        "	transaksi.status_pembayaran, pengangkutan.tanggal_pengangkutan, pengangkutan.id, \n" +
+                        "	pengangkutan.status_angkut, pengangkutan.keterangan, pengangkutan.id_transaksi \n" +
+                        "	FROM pengguna \n" +
+                        "	JOIN transaksi ON pengguna.id = transaksi.id_pengguna \n" +
+                        "	JOIN pengangkutan ON transaksi.id = pengangkutan.id_transaksi \n" +
+                        "	WHERE pengguna.id=?";
             try{
               PreparedStatement ps = conn.prepareStatement(query);
               ps.setInt(1, id_pengguna);
@@ -125,7 +127,9 @@ public class Function {
                     int status_angkut = rs.getInt("pengangkutan.status_angkut");
                     int status_pembayaran = rs.getInt("transaksi.status_pembayaran");
                     int id_transaksi = rs.getInt("pengangkutan.id_transaksi");
-                    Status status = new Status(nama, statusPengguna, id_transaksi, status_angkut, keterangan, status_pembayaran);
+                    int id_pengangkutan = rs.getInt("pengangkutan.id");
+                    int relaIdTransaksi = rs.getInt("transaksi.id");
+                    Status status = new Status(nama, statusPengguna, id_transaksi, id_pengangkutan, relaIdTransaksi, status_angkut, keterangan, status_pembayaran);
                     arrStatus.add(status);
 //                    System.out.println(arrStatus.isEmpty()+" ini id_transaksi");
                 }
@@ -169,18 +173,51 @@ public class Function {
                 int nomorUrut = 0;
                 while(rs.next()){
                     nomorUrut++;
+                    int idTransaksi = rs.getInt("id");
                     String tanggalTransaksi = rs.getString("tanggal_transaksi");
                     float jumlahBayar = rs.getFloat("jumlah_bayar");
+                    int id_pelanggan = rs.getInt("id_pengguna");
                     int statusPembayaran = rs.getInt("status_pembayaran");
+                    HistoriTransaksi histori;
                     if(statusPembayaran!=0){
                         String statusBayar = "Lunas";
-                        HistoriTransaksi histori = new HistoriTransaksi(nomorUrut, tanggalTransaksi, jumlahBayar, statusBayar);
-                        arrHistori.add(histori);
+                        histori = new HistoriTransaksi(nomorUrut, idTransaksi, tanggalTransaksi, jumlahBayar, id_pelanggan, statusBayar);
                     }else{
                         String statusBayar = "Belum Lunas";
-                        HistoriTransaksi histori = new HistoriTransaksi(nomorUrut, tanggalTransaksi, jumlahBayar, statusBayar);
-                        arrHistori.add(histori);
-                    }
+                        histori = new HistoriTransaksi(nomorUrut, idTransaksi, tanggalTransaksi, jumlahBayar, id_pelanggan, statusBayar);
+                    }                        
+                    arrHistori.add(histori);
+                }
+                rs.close();
+                ps.close();
+            }catch(SQLException e){
+                Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    public void loadDataHistoriAll(){
+        if(conn!=null){
+            String query = "SELECT*FROM transaksi";
+            try{
+                PreparedStatement ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                int nomorUrut = 0;
+                while(rs.next()){
+                    nomorUrut++;
+                    int idTransaksi = rs.getInt("id");
+                    String tanggalTransaksi = rs.getString("tanggal_transaksi");
+                    float jumlahBayar = rs.getFloat("jumlah_bayar");
+                    int id_pelanggan = rs.getInt("id_pengguna");
+                    int statusPembayaran = rs.getInt("status_pembayaran");
+                    HistoriTransaksi histori;
+                    if(statusPembayaran!=0){
+                        String statusBayar = "Lunas";
+                        histori = new HistoriTransaksi(nomorUrut, idTransaksi, tanggalTransaksi, jumlahBayar, id_pelanggan, statusBayar);
+                    }else{
+                        String statusBayar = "Belum Lunas";
+                        histori = new HistoriTransaksi(nomorUrut, idTransaksi, tanggalTransaksi, jumlahBayar, id_pelanggan, statusBayar);
+                    }                        
+                    arrHistori.add(histori);
                 }
                 rs.close();
                 ps.close();
@@ -273,23 +310,78 @@ public class Function {
             }
         }
     }
-    
-    public void updateDataAngkut(int idPengguna, Date tanggalPengangkutan, int statusAngkut){
+    public void updateDataTransaksi(int idPengguna, int statusPembayaran, float jumlahBayar, String tanggalTransaksi, int idTransaksi){
         if(conn!=null){
-            String query="UPDATE pengangkutan JOIN transaksi ON pengangkutan.id_transaksi=transaksi.id"
-                    + "JOIN pengguna ON transaksi.id_pengguna=? SET pengangkutan.tanggal_pengangkutan=?,"
-                    + "pengangkutan.status_angkut=?";
+            String query=" UPDATE transaksi t \n" +
+                        "	JOIN pengguna p ON t.id_pengguna =?\n" +
+                        "	SET t.status_pembayaran=?, t.jumlah_bayar=?, t.tanggal_transaksi=?\n"+
+                        "       WHERE t.id=?";
             try{
                 PreparedStatement ps = conn.prepareStatement(query);                
                 ps.setInt(1, idPengguna);
-                ps.setDate(2, tanggalPengangkutan);
-                ps.setInt(3, statusAngkut);
+                ps.setInt(2, statusPembayaran);
+                ps.setFloat(3, jumlahBayar);
+                ps.setString(4, tanggalTransaksi);
+                ps.setInt(5, idTransaksi);
+                int hasil = ps.executeUpdate();
+                if(hasil==1){
+                    JOptionPane.showMessageDialog(null, "Berhasil update data transaksi");
+                }
+            }catch(SQLException e){
+                Logger.getLogger(formAdmin.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    public void updateDataAngkut(int idPengguna, String tanggal_pengangkutan, int statusAngkut, int idPengangkutan){
+        if(conn!=null){
+            String query="UPDATE pengangkutan a\n" +
+                        "	JOIN transaksi t ON a.id_transaksi = t.id  \n" +
+                        "	JOIN pengguna p ON t.id_pengguna=?\n" +
+                        "	SET a.status_angkut=?, a.tanggal_pengangkutan=?\n" +
+                        "	WHERE a.id=?";
+            try{
+                PreparedStatement ps = conn.prepareStatement(query);                
+                ps.setInt(1, idPengguna);
+                ps.setInt(2, statusAngkut);
+                ps.setString(3, tanggal_pengangkutan);
+                ps.setInt(4, idPengangkutan);
                 int hasil = ps.executeUpdate();
                 if(hasil==1){
                     JOptionPane.showMessageDialog(null, "Berhasil update data pengangkutan");
                 }
             }catch(SQLException e){
                 Logger.getLogger(formAdmin.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    //Tambah data transaksi dan pengangkutan
+    public void tambahDataTransaksi(int idPengguna){
+        if(conn!=null){
+            String query="INSERT INTO transaksi (tanggal_transaksi, jumlah_bayar, status_pembayaran, id_pengguna) VALUES ('2000-01-01', 0, 0, ?)";
+            try {
+                PreparedStatement ps  = conn.prepareStatement(query);
+                ps.setInt(1, idPengguna);
+                int hasil = ps.executeUpdate();
+                if(hasil == 1){
+                    JOptionPane.showMessageDialog(null, "Transaksi berhasil ditambahkan");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(formRegister.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    public void tambahDataPengangkutan(int idTransaksi){
+        if(conn!=null){
+            String query="INSERT INTO pengangkutan (tanggal_pengangkutan, status_angkut, id_transaksi) VALUES ('2000-01-01', 0, ?)";
+            try {
+                PreparedStatement ps  = conn.prepareStatement(query);
+                ps.setInt(1, idTransaksi);
+                int hasil = ps.executeUpdate();
+                if(hasil == 1){
+                    JOptionPane.showMessageDialog(null, "Pengangkutan berhasil ditambahkan");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(formRegister.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
