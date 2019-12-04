@@ -22,6 +22,7 @@ import montrash_oneforall.model.HistoriTransaksi;
 import montrash_oneforall.model.Pengguna;
 import montrash_oneforall.model.Status;
 import montrash_oneforall.model.SharedData;
+import montrash_oneforall.model.Transaksi;
 import montrash_oneforall.view.formAdmin;
 import montrash_oneforall.view.formLogin;
 import montrash_oneforall.view.formPengguna;
@@ -131,7 +132,6 @@ public class Function {
                     int relaIdTransaksi = rs.getInt("transaksi.id");
                     Status status = new Status(nama, statusPengguna, id_transaksi, id_pengangkutan, relaIdTransaksi, status_angkut, keterangan, status_pembayaran);
                     arrStatus.add(status);
-//                    System.out.println(arrStatus.isEmpty()+" ini id_transaksi");
                 }
                 rs.close();
                 ps.close();
@@ -242,13 +242,14 @@ public class Function {
                     String tanggalTransaksi = rs.getString("tanggal_pengangkutan");
                     int statusAngkut = rs.getInt("status_angkut");
                     String keterangan = rs.getString("keterangan");
+                    int id = rs.getInt("id");
                     if(statusAngkut!=0){
                         String statusPengangkutan = "Sudah Diangkut";
-                        HistoriPengangkutan historiAngkut = new HistoriPengangkutan(nomorUrut, tanggalTransaksi, statusPengangkutan, keterangan);
+                        HistoriPengangkutan historiAngkut = new HistoriPengangkutan(nomorUrut, id, tanggalTransaksi, statusPengangkutan, keterangan);
                         arrHistoriAngkut.add(historiAngkut);
                     }else{
                         String statusPengangkutan = "Belum Diangkut";
-                        HistoriPengangkutan historiAngkut = new HistoriPengangkutan(nomorUrut, tanggalTransaksi, statusPengangkutan, keterangan);
+                        HistoriPengangkutan historiAngkut = new HistoriPengangkutan(nomorUrut, id, tanggalTransaksi, statusPengangkutan, keterangan);
                         arrHistoriAngkut.add(historiAngkut);
                     }
                 }
@@ -355,7 +356,9 @@ public class Function {
         }
     }
     //Tambah data transaksi dan pengangkutan
-    public void tambahDataTransaksi(int idPengguna){
+    public ArrayList<Transaksi> arrTransaksi = new ArrayList<>();
+    public Boolean tambahDataTransaksi(int idPengguna){
+        boolean cek=false;
         if(conn!=null){
             String query="INSERT INTO transaksi (tanggal_transaksi, jumlah_bayar, status_pembayaran, id_pengguna) VALUES ('2000-01-01', 0, 0, ?)";
             try {
@@ -364,11 +367,13 @@ public class Function {
                 int hasil = ps.executeUpdate();
                 if(hasil == 1){
                     JOptionPane.showMessageDialog(null, "Transaksi berhasil ditambahkan");
+                    cek=true;
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(formRegister.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return cek;
     }
     public void tambahDataPengangkutan(int idTransaksi){
         if(conn!=null){

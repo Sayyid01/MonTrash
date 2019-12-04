@@ -58,10 +58,10 @@ public class formPengguna extends javax.swing.JFrame {
     */
     private void loadKolom(){
         tableHistori.addColumn("No");
+        tableHistori.addColumn("Id Transaksi");
         tableHistori.addColumn("Tanggal");
         tableHistori.addColumn("Jumlah Bayar");
         tableHistori.addColumn("Status");
-        tableHistori.addColumn("Id Transaksi");
     }
     private void tampilHistoriPengguna(){
         for(HistoriTransaksi h:f.arrHistori){

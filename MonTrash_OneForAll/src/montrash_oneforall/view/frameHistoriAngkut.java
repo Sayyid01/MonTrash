@@ -50,7 +50,7 @@ public class frameHistoriAngkut extends javax.swing.JFrame {
     }
     private void tampilHistoriPengguna(){
         for(HistoriPengangkutan h:f.arrHistoriAngkut){
-            tableHistoriAngkut.addRow(new Object[]{h.getId(), h.getTanggalAngkut(), h.getStatusAngkut(), h.getKeterangan()});
+            tableHistoriAngkut.addRow(new Object[]{h.getNomorUrut(), h.getTanggalAngkut(), h.getStatusAngkut(), h.getKeterangan()});
         }
     }    
 
@@ -85,6 +85,7 @@ public class frameHistoriAngkut extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jtHistoriPengangkutan.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jtHistoriPengangkutan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtHistoriPengangkutanMouseClicked(evt);

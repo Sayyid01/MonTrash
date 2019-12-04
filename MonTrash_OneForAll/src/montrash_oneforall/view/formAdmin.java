@@ -85,6 +85,7 @@ public class formAdmin extends javax.swing.JFrame {
         group1.add(sudahMembayar);
         group1.add(belumMembayar);
         if(f.arrStatus.isEmpty()==false){
+            System.out.println(f.arrStatus.size());
             int lastIndex = f.arrStatus.size()-1;
             int status = f.arrStatus.get(lastIndex).getStatus_pembayaran();
             if(status==0){
@@ -102,8 +103,8 @@ public class formAdmin extends javax.swing.JFrame {
         tfKeteranganUser.setEditable(false);
         if(f.arrStatus.isEmpty()==false){
             int lastIndex = f.arrStatus.size()-1;
+            System.out.println(lastIndex);
             String keterangan = f.arrStatus.get(lastIndex).getKeterangan();
-            System.out.println(keterangan);
             tfKeteranganUser.setText(keterangan);
             tfKeteranganUser.setEditable(false);
             int status = f.arrStatus.get(lastIndex).getStatus_angkut();
@@ -489,6 +490,11 @@ public class formAdmin extends javax.swing.JFrame {
 
         tambahDataPengangkutan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         tambahDataPengangkutan.setText("+");
+        tambahDataPengangkutan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tambahDataPengangkutanActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpStatusLayout = new javax.swing.GroupLayout(jpStatus);
         jpStatus.setLayout(jpStatusLayout);
@@ -610,7 +616,6 @@ public class formAdmin extends javax.swing.JFrame {
                     .addComponent(belumMembayar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btUpdateTransaksi, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jpStatusLayout.createSequentialGroup()
                         .addGroup(jpStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -633,7 +638,7 @@ public class formAdmin extends javax.swing.JFrame {
                     .addComponent(belumDiangkut))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btUpdateAngkut, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         jPanel2.add(jpStatus, "card3");
@@ -829,6 +834,7 @@ public class formAdmin extends javax.swing.JFrame {
             tfKeteranganUser.setLineWrap(true);
             statusPembayaran();
             statusAngkut();
+            f.arrStatus.clear();
         }
     }//GEN-LAST:event_btCariIdActionPerformed
 
@@ -856,11 +862,13 @@ public class formAdmin extends javax.swing.JFrame {
             }
             int idPengguna = Integer.parseInt(id);
             String tanggalBayar = tfTanggalBayar.getText();
-            if(f.arrStatus.isEmpty()==false){
-                int lastIndex = f.arrStatus.size()-1;
-                int idTransaksi = f.arrStatus.get(lastIndex).getRealIdTransaksi();
+            if(f.arrHistori.isEmpty()==false){
+                int lastIndex = f.arrHistori.size()-1;
+                int idTransaksi = f.arrHistori.get(lastIndex).getId();
                 System.out.println(idTransaksi);
                 f.updateDataTransaksi(idPengguna, statusBayar, jumlahBayar, tanggalBayar, idTransaksi);
+            }else{
+                JOptionPane.showMessageDialog(null, "terjadi kesalahan, arrStatus.isEmpty()");
             }
         }
     }//GEN-LAST:event_btUpdateTransaksiActionPerformed
@@ -876,11 +884,17 @@ public class formAdmin extends javax.swing.JFrame {
             }
             int idPengguna = Integer.parseInt(s);
             String tanggalAngkut = tfTanggalAngkut.getText();
-            if(f.arrStatus.isEmpty()==false){
-                int lastIndex = f.arrStatus.size()-1;
-                int idAngkut = f.arrStatus.get(lastIndex).getId_pengangkutan();
+            f.getStatusUserData(idPengguna);
+            int lastIndexStatus = f.arrStatus.size()-1;
+            int idTransaksi = f.arrStatus.get(lastIndexStatus).getRealIdTransaksi();
+            f.loadDataHistoriAngkut(idTransaksi);
+            if(f.arrHistoriAngkut.isEmpty()==false){
+                int lastIndexHistori = f.arrHistoriAngkut.size()-1;
+                int idAngkut = f.arrHistoriAngkut.get(lastIndexHistori).getId();
                 System.out.println(idAngkut);
                 f.updateDataAngkut(idPengguna, tanggalAngkut, statusAngkut, idAngkut);
+            }else{
+                JOptionPane.showMessageDialog(null, "terjadi kesalahan, arrStatus.isEmpty()");
             }
         }
     }//GEN-LAST:event_btUpdateAngkutActionPerformed
@@ -897,7 +911,6 @@ public class formAdmin extends javax.swing.JFrame {
 
     private void btCariPelangganByIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCariPelangganByIdActionPerformed
         f.arrHistori.clear();
-        System.out.println(f.arrHistori.size());
         String s = tfIdCariPelanggan.getText().trim();
         if(s.equalsIgnoreCase("")){
             f.loadDataHistoriAll(); tampilHistori();
@@ -917,10 +930,32 @@ public class formAdmin extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(null, message);
             if(confirm == 0){
                 int idPengguna = Integer.parseInt(id);
-                f.tambahDataTransaksi(idPengguna);
+                if(f.tambahDataTransaksi(idPengguna)==true){
+                    f.loadDataHistori(idPengguna);
+                    int lastIndex = f.arrHistori.size()-1;
+                    int idTransaksi=f.arrHistori.get(lastIndex).getId();
+                    f.tambahDataPengangkutan(idTransaksi);
+                }
             }
         }
     }//GEN-LAST:event_tambahDataTransaksiActionPerformed
+
+    private void tambahDataPengangkutanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahDataPengangkutanActionPerformed
+        String id = tfCariId.getText().trim();
+        if(id.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Silahkan masukkan Id pengguna telebih dahulu");
+        }else{
+            String message ="Setelah menambahkan data\n anda tidak bisa lagi mengedit data sebelumnya\n apakah anda yakin?";
+            int confirm = JOptionPane.showConfirmDialog(null, message);
+            if(confirm == 0){
+                int idPengguna = Integer.parseInt(id);
+                f.loadDataHistori(idPengguna);
+                int lastIndex = f.arrHistori.size()-1;
+                int idTransaksi=f.arrHistori.get(lastIndex).getId();
+                f.tambahDataPengangkutan(idTransaksi);
+            }
+        }
+    }//GEN-LAST:event_tambahDataPengangkutanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -987,14 +1022,12 @@ public class formAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JPanel jpAkunSaya;
     private javax.swing.JPanel jpHistori;
     private javax.swing.JPanel jpStatus;
-    private javax.swing.JTable jtHistori;
     private javax.swing.JTable jtHistoriPembayaran;
     private javax.swing.JLabel namaPengguna;
     private javax.swing.JRadioButton rbnAkunSaya;

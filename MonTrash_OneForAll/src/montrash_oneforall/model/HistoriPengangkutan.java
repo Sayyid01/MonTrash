@@ -10,16 +10,29 @@ package montrash_oneforall.model;
  * @author Sayyid
  */
 public class HistoriPengangkutan {
+    private int nomorUrut;
     private int id;
     private String tanggalAngkut;
     private String statusAngkut;
     private String keterangan;
 
+    public HistoriPengangkutan(int nomorUrut, int id, String tanggalAngkut, String statusAngkut, String keterangan) {
+        this.nomorUrut = nomorUrut;
+        this.id = id;
+        this.tanggalAngkut = tanggalAngkut;
+        this.statusAngkut = statusAngkut;
+        this.keterangan = keterangan;
+    }
+    
     public HistoriPengangkutan(int id, String tanggalAngkut, String statusAngkut, String keterangan) {
         this.id = id;
         this.tanggalAngkut = tanggalAngkut;
         this.statusAngkut = statusAngkut;
         this.keterangan = keterangan;
+    }
+
+    public int getNomorUrut() {
+        return nomorUrut;
     }
 
     public int getId() {
