@@ -93,6 +93,13 @@ public class formAdmin extends javax.swing.JFrame {
             }else{
                 sudahMembayar.setSelected(true);
             }
+            if(f.arrHistori.isEmpty()==false){
+                int lastIndexHistori = f.arrHistori.size()-1;
+                String tanggalTransaksi = f.arrHistori.get(lastIndexHistori).getTanggalTransaksi();
+                float jumlahBayar = f.arrHistori.get(lastIndexHistori).getJumlahBayar();
+                tfJumlahBayar.setText(String.valueOf(jumlahBayar));
+                tfTanggalBayar.setText(tanggalTransaksi);
+            }
         }
     }
     private void statusAngkut(){
@@ -112,6 +119,15 @@ public class formAdmin extends javax.swing.JFrame {
                 belumDiangkut.setSelected(true);
             }else{
                 sudahDiangkut.setSelected(true);
+            }
+            
+            int lastIndexStatus = f.arrStatus.size()-1;
+            int idTransaksi = f.arrStatus.get(lastIndexStatus).getRealIdTransaksi();
+            f.loadDataHistoriAngkut(idTransaksi);
+            if(f.arrHistoriAngkut.isEmpty()==false){
+                int lastIndexHistori = f.arrHistoriAngkut.size()-1;
+                String tanggalAngkut = f.arrHistoriAngkut.get(lastIndexHistori).getTanggalAngkut();
+                tfTanggalAngkut.setText(tanggalAngkut);
             }
         }
     }
@@ -376,7 +392,7 @@ public class formAdmin extends javax.swing.JFrame {
 
         tfCariId.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        btCariId.setText("Cari Id Pengguna");
+        btCariId.setText("Cari Id Pelanggan");
         btCariId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btCariIdActionPerformed(evt);
@@ -394,6 +410,12 @@ public class formAdmin extends javax.swing.JFrame {
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel6.setText("Jumlah Bayar          :");
+
+        tfJumlahBayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfJumlahBayarActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel7.setText("Tanggal Transaksi    :");
@@ -829,6 +851,7 @@ public class formAdmin extends javax.swing.JFrame {
         }else{
             int idPengguna = Integer.parseInt(s);
             f.getStatusUserData(idPengguna);
+            f.loadDataHistori(idPengguna);
             getNamaUser();
             getStatusUser();
             tfKeteranganUser.setLineWrap(true);
@@ -956,6 +979,10 @@ public class formAdmin extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_tambahDataPengangkutanActionPerformed
+
+    private void tfJumlahBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfJumlahBayarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfJumlahBayarActionPerformed
 
     /**
      * @param args the command line arguments

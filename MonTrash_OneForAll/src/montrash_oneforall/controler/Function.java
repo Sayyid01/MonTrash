@@ -110,7 +110,7 @@ public class Function {
     */
     public void getStatusUserData(int id_pengguna){
        if(conn!=null){           
-            String query="SELECT pengguna.nama, pengguna.status, transaksi.id, transaksi.tanggal_transaksi, \n" +
+            String query="SELECT pengguna.nama, pengguna.status, pengguna.email, pengguna.no_hp, pengguna.alamat, transaksi.id, transaksi.tanggal_transaksi, \n" +
                         "	transaksi.status_pembayaran, pengangkutan.tanggal_pengangkutan, pengangkutan.id, \n" +
                         "	pengangkutan.status_angkut, pengangkutan.keterangan, pengangkutan.id_transaksi \n" +
                         "	FROM pengguna \n" +
@@ -123,14 +123,17 @@ public class Function {
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()){
                     String nama = rs.getString("nama");
+                    String email = rs.getString("email");
+                    String noHp = rs.getString("no_hp");
+                    String alamat = rs.getString("alamat");
                     String statusPengguna = rs.getString("status");
                     String keterangan = rs.getString("keterangan");
                     int status_angkut = rs.getInt("pengangkutan.status_angkut");
                     int status_pembayaran = rs.getInt("transaksi.status_pembayaran");
                     int id_transaksi = rs.getInt("pengangkutan.id_transaksi");
                     int id_pengangkutan = rs.getInt("pengangkutan.id");
-                    int relaIdTransaksi = rs.getInt("transaksi.id");
-                    Status status = new Status(nama, statusPengguna, id_transaksi, id_pengangkutan, relaIdTransaksi, status_angkut, keterangan, status_pembayaran);
+                    int realIdTransaksi = rs.getInt("transaksi.id");
+                    Status status = new Status(nama, email, noHp, alamat, keterangan, statusPengguna, id_transaksi, id_pengangkutan, realIdTransaksi, status_angkut, status_pembayaran);
                     arrStatus.add(status);
                 }
                 rs.close();

@@ -559,7 +559,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btCariId">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Cari Id Pengguna"/>
+                    <Property name="text" type="java.lang.String" value="Cari Id Pelanggan"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btCariIdActionPerformed"/>
@@ -598,6 +598,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="tfJumlahBayar">
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfJumlahBayarActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
                   <Properties>
