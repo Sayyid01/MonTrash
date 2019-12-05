@@ -291,6 +291,23 @@ public class Function {
             }
         }
     }
+    public void updateUserData(String email, String noHp, int idPengguna){
+        if(conn!=null){
+            String query = "UPDATE pengguna SET email=?, no_hp=? WHERE id=?";
+            try{
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1, email);
+                ps.setString(2, noHp);
+                ps.setInt(3, idPengguna);
+                int hasil = ps.executeUpdate();
+                if(hasil==1){
+                    JOptionPane.showMessageDialog(null, "Data anda berhasil diperbarui");
+                }
+            }catch(SQLException e){
+                Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
     public void cariPenggunaKeyword(String keyword){
         if(conn!=null){
             String query="SELECT*FROM pengguna WHERE nama LIKE? AND level='user'";
@@ -311,6 +328,7 @@ public class Function {
                 rs.close();
                 ps.close();
             }catch(SQLException e){
+                Logger.getLogger(formAdmin.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }

@@ -658,7 +658,11 @@ public class formPengguna extends javax.swing.JFrame {
     }//GEN-LAST:event_btExportToPDFActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-        
+        String email, noHp;
+        email = tfEmail.getText();
+        noHp = tfNoHp.getText();
+        int IdPengguna = id_pengguna;
+        f.updateUserData(email, noHp, IdPengguna);
     }//GEN-LAST:event_editButtonActionPerformed
 
     /**
