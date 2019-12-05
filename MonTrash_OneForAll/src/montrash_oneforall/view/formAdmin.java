@@ -5,6 +5,10 @@
  */
 package montrash_oneforall.view;
 
+import java.awt.print.PrinterException;
+import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -703,6 +707,11 @@ public class formAdmin extends javax.swing.JFrame {
         });
 
         btExportToPDF.setText("Jadikan PDF");
+        btExportToPDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btExportToPDFActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Klik tabel untuk melihat histori pengangkutan");
 
@@ -983,6 +992,16 @@ public class formAdmin extends javax.swing.JFrame {
     private void tfJumlahBayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfJumlahBayarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfJumlahBayarActionPerformed
+
+    private void btExportToPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExportToPDFActionPerformed
+        String judul = "Histori Pembayaran";
+        MessageFormat header = new MessageFormat(judul);
+        try {
+            jtHistoriPembayaran.print(JTable.PrintMode.FIT_WIDTH, header, null);
+        } catch (PrinterException ex) {
+            Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btExportToPDFActionPerformed
 
     /**
      * @param args the command line arguments

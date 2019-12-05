@@ -5,6 +5,9 @@
  */
 package montrash_oneforall.view;
 
+import java.awt.print.PrinterException;
+import java.text.MessageFormat;
+import java.util.logging.*;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -654,7 +657,14 @@ public class formPengguna extends javax.swing.JFrame {
     }//GEN-LAST:event_jtHistoriMouseClicked
 
     private void btExportToPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExportToPDFActionPerformed
-        JOptionPane.showMessageDialog(null, "Coming Soon", "Punteeen!", JOptionPane.INFORMATION_MESSAGE);
+//        JOptionPane.showMessageDialog(null, "Coming Soon", "Punteeen!", JOptionPane.INFORMATION_MESSAGE);
+        String judul = "Histori Pembayaran Pengguna";
+        MessageFormat header = new MessageFormat(judul);
+        try {
+            jtHistori.print(JTable.PrintMode.FIT_WIDTH, header, null);
+        } catch (PrinterException ex) {
+            Logger.getLogger(formPengguna.class.getName()).log(Level.SEVERE, null, ex);
+        }	
     }//GEN-LAST:event_btExportToPDFActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
