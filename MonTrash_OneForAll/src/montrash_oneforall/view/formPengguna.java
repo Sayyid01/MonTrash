@@ -639,8 +639,8 @@ public class formPengguna extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Tidak bisa mengirim pesan kosong");
         }else{
             String keterangan = tfKeterangan.getText();
-            int id_angkut = f.arrStatus.size();
             int lastIndex = f.arrStatus.size()-1;
+            int id_angkut = f.arrStatus.get(lastIndex).getId_pengangkutan();
             int id_transaksi = f.arrStatus.get(lastIndex).getId_transaksi();
             f.kirimKeterangan(keterangan, id_angkut, id_transaksi);
         }
